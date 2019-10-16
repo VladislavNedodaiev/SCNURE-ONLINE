@@ -20,7 +20,7 @@ namespace SCNURE_BACKEND.Controllers
 
         // GET api/values
         [HttpGet]
-        public IEnumerable<Startups> Get()
+        public IEnumerable<Data.Startup> Get()
         {
             return _dbContext.Startups.ToList();
         }
