@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using SCNURE_BACKEND.Data.Entities;
 
 namespace SCNURE_BACKEND.Data
 {
@@ -23,7 +24,7 @@ namespace SCNURE_BACKEND.Data
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Participant> Participants { get; set; }
         public virtual DbSet<Reward> Rewards { get; set; }
-        public virtual DbSet<Startup> Startups { get; set; }
+        public virtual DbSet<Entities.Startup> Startups { get; set; }
         public virtual DbSet<TeamMember> TeamMembers { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
@@ -336,7 +337,7 @@ namespace SCNURE_BACKEND.Data
                     .HasConstraintName("Rewards_ibfk_2");
             });
 
-            modelBuilder.Entity<Startup>(entity =>
+            modelBuilder.Entity<Entities.Startup>(entity =>
             {
                 entity.HasKey(e => e.StartupId)
                     .HasName("PRIMARY");
@@ -428,12 +429,12 @@ namespace SCNURE_BACKEND.Data
 
                 entity.Property(e => e.Admin)
                     .HasColumnName("admin")
-                    .HasColumnType("tinyint(1)")
+                    //.HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Ban)
                     .HasColumnName("ban")
-                    .HasColumnType("tinyint(1)")
+                    //.HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Birthday)
@@ -460,13 +461,18 @@ namespace SCNURE_BACKEND.Data
 
                 entity.Property(e => e.Membership)
                     .HasColumnName("membership")
-                    .HasColumnType("tinyint(1)")
+                    //.HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.Password)
+                entity.Property(e => e.PasswordHash)
                     .IsRequired()
-                    .HasColumnName("password")
-                    .HasColumnType("varchar(256)");
+                    .HasColumnName("password_hash")
+                    .HasColumnType("binary(64)");
+
+                entity.Property(e => e.PasswordSalt)
+                    .IsRequired()
+                    .HasColumnName("password_salt")
+                    .HasColumnType("binary(64)");
 
                 entity.Property(e => e.Phone)
                     .HasColumnName("phone")
@@ -487,17 +493,17 @@ namespace SCNURE_BACKEND.Data
 
                 entity.Property(e => e.ShowBirthday)
                     .HasColumnName("show_birthday")
-                    .HasColumnType("tinyint(1)")
+                    //.HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.ShowEmail)
                     .HasColumnName("show_email")
-                    .HasColumnType("tinyint(1)")
+                    //.HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.ShowPhone)
                     .HasColumnName("show_phone")
-                    .HasColumnType("tinyint(1)")
+                    //.HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Verification)

@@ -8,7 +8,7 @@ namespace SCNURE_BACKEND.Data.Repositories.Users
 {
     public interface IUsersRepository : IAsyncRepository<User>
     {
-        Task<User> GetByLoginAsync(string username);
+        Task<User> GetByLoginOrEmailAsync(string loginOrEmail);
         Task<bool> IsLoginTaken(string username);
     }
 }

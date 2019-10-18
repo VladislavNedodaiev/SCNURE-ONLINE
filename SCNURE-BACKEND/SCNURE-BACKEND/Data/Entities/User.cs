@@ -25,15 +25,15 @@ namespace SCNURE_BACKEND.Data.Entities
         public string Photo { get; set; }
         public string Description { get; set; }
         public string Phone { get; set; }
-        public sbyte ShowPhone { get; set; }
+        public bool ShowPhone { get; set; }
         public DateTime? Birthday { get; set; }
-        public sbyte ShowBirthday { get; set; }
+        public bool ShowBirthday { get; set; }
         public DateTime RegisterDate { get; set; }
         public string Email { get; set; }
-        public sbyte ShowEmail { get; set; }
-        public sbyte Admin { get; set; }
-        public sbyte Membership { get; set; }
-        public sbyte Ban { get; set; }
+        public bool ShowEmail { get; set; }
+        public bool Admin { get; set; }
+        public bool Membership { get; set; }
+        public bool Ban { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> Likes { get; set; }

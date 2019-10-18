@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SCNURE_BACKEND.Data.Dtos;
 using SCNURE_BACKEND.Data.Entities;
 using SCNURE_BACKEND.Data.Repositories.Users;
+using SCNURE_BACKEND.Helpers;
 
 namespace SCNURE_BACKEND.Services.Users
 {
@@ -16,12 +18,12 @@ namespace SCNURE_BACKEND.Services.Users
             _usersRepository = usersRepository;
         }
 
-        public async Task<User> AuthenticateAsync(string username, string password)
+        public async Task<User> AuthenticateAsync(string loginOrEmail, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(loginOrEmail) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = await _usersRepository.GetByLoginAsync(username);
+            var user = await _usersRepository.GetByLoginOrEmailAsync(loginOrEmail);
 
             if (user == null)
                 return null;
@@ -37,16 +39,21 @@ namespace SCNURE_BACKEND.Services.Users
             return await _usersRepository.GetByIdAsync(id);
         }
 
-        public async Task<User> Create(User user, string password)
+        public async Task<User> CreateUserFromDto(RegisterDto userDto)
         {
-            if (await _usersRepository.IsLoginTaken(user.Login))
-                throw new ArgumentException("Username \"" + user.Login + "\" is already taken");
+            if (await _usersRepository.IsLoginTaken(userDto.Login))
+                throw new ArgumentException("Username \"" + userDto.Login + "\" is already taken");
 
             byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            User user = new User()
+            {
+                Login = userDto.Login,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Email = userDto.Email
+            };
 
             await _usersRepository.AddAsync(user);
 

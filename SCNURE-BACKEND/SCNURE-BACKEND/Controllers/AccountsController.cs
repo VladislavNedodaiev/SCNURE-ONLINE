@@ -30,10 +30,10 @@ namespace SCNURE_BACKEND.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("auth")]
-        public async Task<IActionResult> Authenticate([FromBody]UserDto userDto)
+        [HttpPost("login")]
+        public async Task<IActionResult> Authenticate([FromBody]LoginDto userDto)
         {
-            var user = await _userService.AuthenticateAsync(userDto.Username, userDto.Password);
+            var user = await _userService.AuthenticateAsync(userDto.LoginOrEmail, userDto.Password);
 
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -55,20 +55,18 @@ namespace SCNURE_BACKEND.Controllers
             return Ok(new
             {
                 Id = user.UserId,
-                Username = user.Login,
+                Login = user.Login,
                 Token = tokenString
             });
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync([FromBody]UserDto userDto)
+        public async Task<IActionResult> RegisterAsync([FromBody]RegisterDto userDto)
         {
-            User user = new User() { Login = userDto.Username };
-
             try
             {
-                await _userService.Create(user, userDto.Password);
+                await _userService.CreateUserFromDto(userDto);
                 return Ok();
             }
             catch (ArgumentException ex)
