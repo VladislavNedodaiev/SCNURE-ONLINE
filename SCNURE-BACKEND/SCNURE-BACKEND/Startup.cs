@@ -67,6 +67,13 @@ namespace SCNURE_BACKEND
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+
             app.UseMvc();
 
             app.UseAuthentication();
