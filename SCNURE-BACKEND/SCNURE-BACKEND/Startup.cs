@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using SCNURE_BACKEND.Services.Users;
 using SCNURE_BACKEND.Data.Repositories;
 using SCNURE_BACKEND.Data.Repositories.Users;
+using Microsoft.OpenApi.Models;
 
 namespace SCNURE_BACKEND
 {
@@ -45,6 +46,11 @@ namespace SCNURE_BACKEND
             services.AddDbContext<SCContext>(options => options.UseMySql(Configuration.GetConnectionString("MainMySqlConn")));
 
             ConfigureJwtAuthorization(services);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "SCNURE-BACKEND", Version = "v.0.0.1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +70,13 @@ namespace SCNURE_BACKEND
             app.UseMvc();
 
             app.UseAuthentication();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SCNURE-BACKEND");
+                c.RoutePrefix = string.Empty;
+            });
         }
 
         private void ConfigureJwtAuthorization(IServiceCollection services)
