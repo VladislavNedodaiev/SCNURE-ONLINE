@@ -44,6 +44,9 @@ namespace SCNURE_BACKEND.Services.Users
             if (await _usersRepository.IsLoginTaken(userDto.Login))
                 throw new ArgumentException("Username \"" + userDto.Login + "\" is already taken");
 
+			if (userDto.Password != userDto.PasswordConfirmation)
+				throw new ArgumentException("Password and passwordConfirmation don't match");
+
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
 
