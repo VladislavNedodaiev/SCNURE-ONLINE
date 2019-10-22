@@ -228,3 +228,58 @@ input:focus ~ .highlight, textarea:focus ~ .highlight {
 	from { background:#1B1464; }
   to 	{ width:0; background:transparent; }
 }
+
+
+/* upload startup image*/
+.file-upload {
+	width: 100%;
+	margin: 0 auto 20px;
+	padding: 20px 0;
+}
+
+.file-upload-btn{
+	width: 100%;
+	padding: 15px;
+	text-transform: uppercase;
+	color: white;
+	background-color:  #f18415;
+	border: 2px solid  #f18415;
+	cursor: pointer;
+}
+	
+.file-upload-btn:hover {
+	color: #f18415;
+	background-color:  white;
+}
+	
+.file-upload-input{
+	display: none;
+}
+
+.image-upload-wrap {
+	margin-top: 20px;
+}
+.image-title-wrap {
+	width: 50%; /* = .content width*/
+	margin: auto;
+	position:absolute;
+	left: 0;
+	right: 0;
+	padding: 15px;
+	background-image: url(../photo/dark_bg.png);
+	color: #ffffff; 
+}
+
+.file-upload-image{
+	display: block;
+	width: 100%;
+}
+
+.remove-image {
+	float: right;
+	background-color: transparent;
+	border: 2px solid #ffffff;
+	color: #ffffff;
+	font-weight: 600;
+	cursor: pointer;
+}
