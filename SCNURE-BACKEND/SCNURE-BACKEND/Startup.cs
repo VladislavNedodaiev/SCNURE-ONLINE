@@ -18,8 +18,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SCNURE_BACKEND.Services.Users;
-using SCNURE_BACKEND.Data.Repositories;
-using SCNURE_BACKEND.Data.Repositories.Users;
 using Microsoft.OpenApi.Models;
 using SCNURE_BACKEND.Services.Email;
 
@@ -39,10 +37,7 @@ namespace SCNURE_BACKEND
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddScoped(typeof(IAsyncRepository<>), typeof(GenericAsyncRepository<>));
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUsersRepository, UsersRepository>();
-			services.AddScoped<IUsersRepository, UsersRepository>();
 			services.AddScoped<IEmailService, SmtpService>();
 
 
