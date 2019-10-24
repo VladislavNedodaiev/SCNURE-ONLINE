@@ -21,6 +21,7 @@ using SCNURE_BACKEND.Services.Users;
 using SCNURE_BACKEND.Data.Repositories;
 using SCNURE_BACKEND.Data.Repositories.Users;
 using Microsoft.OpenApi.Models;
+using SCNURE_BACKEND.Services.Email;
 
 namespace SCNURE_BACKEND
 {
@@ -41,9 +42,11 @@ namespace SCNURE_BACKEND
             services.AddScoped(typeof(IAsyncRepository<>), typeof(GenericAsyncRepository<>));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+			services.AddScoped<IUsersRepository, UsersRepository>();
+			services.AddScoped<IEmailService, SmtpService>();
 
 
-            services.AddDbContext<SCContext>(options => options.UseMySql(Configuration.GetConnectionString("MainMySqlConn")));
+			services.AddDbContext<SCContext>(options => options.UseMySql(Configuration.GetConnectionString("MainMySqlConn")));
 
             ConfigureJwtAuthorization(services);
 
@@ -106,7 +109,7 @@ namespace SCNURE_BACKEND
                     {
                         var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
                         var userId = int.Parse(context.Principal.Identity.Name);
-                        var user = await userService.GetById(userId);
+                        var user = await userService.GetByIdAsync(userId);
                         if (user == null)
                         {
                             context.Fail("Unauthorized");

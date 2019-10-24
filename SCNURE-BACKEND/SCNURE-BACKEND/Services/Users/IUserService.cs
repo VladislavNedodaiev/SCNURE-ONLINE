@@ -10,7 +10,8 @@ namespace SCNURE_BACKEND.Services.Users
     public interface IUserService
     {
         Task<User> AuthenticateAsync(string loginOrEmail, string password);
-        Task<User> GetById(int id);
-        Task<User> CreateUserFromDto(RegisterDto userDto);
+        Task<User> GetByIdAsync(int id);
+		Task<User> RegisterAsync(RegisterDto userDto);
+		Task ConfirmUserEmailAsync(string token);
     }
 }

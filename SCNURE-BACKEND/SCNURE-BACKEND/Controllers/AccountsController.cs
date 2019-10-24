@@ -1,13 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SCNURE_BACKEND.Data;
 using SCNURE_BACKEND.Data.Dtos;
 using SCNURE_BACKEND.Data.Entities;
 using SCNURE_BACKEND.Helpers;
+using SCNURE_BACKEND.Services.Email;
 using SCNURE_BACKEND.Services.Users;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -21,12 +25,18 @@ namespace SCNURE_BACKEND.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IUserService _userService;
+		//private readonly UserManager<User> _userManager;
         private readonly JwtSettings _jwtSettings;
+		private readonly IEmailService _emailService;
 
-        public AccountsController(IUserService userService, IOptions<JwtSettings> jwtSettings)
+        public AccountsController(IUserService userService, IOptions<JwtSettings> jwtSettings, 
+			//UserManager<User> userManager
+			IEmailService emailService)
         {
             _userService = userService;
             _jwtSettings = jwtSettings.Value;
+			//_userManager = userManager;
+			_emailService = emailService;
         }
 
         [AllowAnonymous]
@@ -66,13 +76,44 @@ namespace SCNURE_BACKEND.Controllers
         {
             try
             {
-                await _userService.CreateUserFromDto(userDto);
-                return Ok();
+                var user = await _userService.RegisterAsync(userDto);
+				if (user != null)
+				{
+					var callbackUrl = Url.Action(
+						"confirmEmail",
+						"accounts",
+						new { token = user.Verification},
+						protocol: HttpContext.Request.Scheme);
+					await _emailService.SendEmailAsync(user.Email, "Confirm your account",
+						$"<h3>Thanks for signing up to YEP! Startup Club</h3>" +
+							$"<p>Please confirm your email address to complete your SCNURE registration.</p>" +
+							$"<a href='{callbackUrl}'>Confirm your email</a>");
+					return Ok();
+				}
+				else
+				{
+					return BadRequest(new { message = "User was not created" });
+				}
             }
             catch (ArgumentException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+		[AllowAnonymous]
+		[HttpGet("confirmEmail")]
+		public async Task<IActionResult> ConfirmEmail([Required]string token)
+		{
+			try
+			{
+				await _userService.ConfirmUserEmailAsync(token);
+				return Ok();
+			}
+			catch (ArgumentException ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
     }
 }

@@ -22,6 +22,11 @@ namespace SCNURE_BACKEND.Data.Repositories.Users
             
         }
 
+		public async Task<User> GetByLogin(string login)
+		{
+			return await _dbSet.SingleOrDefaultAsync(u => u.Login == login);
+		}
+
         public async Task<bool> IsLoginTaken(string login)
         {
             return await _dbSet.AnyAsync(u => u.Login == login);
