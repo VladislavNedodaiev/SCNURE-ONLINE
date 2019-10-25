@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SCNURE_BACKEND.Data;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using SCNURE_BACKEND.Helpers;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using SCNURE_BACKEND.Services.Users;
 using Microsoft.OpenApi.Models;
+using SCNURE_BACKEND.Data;
+using SCNURE_BACKEND.Helpers;
 using SCNURE_BACKEND.Services.Email;
+using SCNURE_BACKEND.Services.Users;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SCNURE_BACKEND
 {
@@ -39,6 +32,7 @@ namespace SCNURE_BACKEND
 
             services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IEmailService, SmtpService>();
+            services.AddScoped<IStartupService, StartupServiceImpl>();
 
 
 			services.AddDbContext<SCContext>(options => options.UseMySql(Configuration.GetConnectionString("MainMySqlConn")));
