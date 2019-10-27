@@ -34,5 +34,21 @@ namespace SCNURE_BACKEND.Controllers
                 return BadRequest(exception.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet("startups")]
+        public async Task<IActionResult> GetAllStartupsAsync()
+        {
+            try
+            {
+                var remoteStartups = await startupService.GetAllStartups();
+                var clientResult = remoteStartupMapper.MapRemoteStartups(remoteStartups);
+                return Ok(clientResult);
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
     }
 }

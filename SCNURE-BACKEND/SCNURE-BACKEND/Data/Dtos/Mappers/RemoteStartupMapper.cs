@@ -28,5 +28,10 @@ namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
             };
             return result;
         }
+
+        public List<ClientStartup> MapRemoteStartups(IEnumerable<Entities.Startup> remoteStartups)
+        {
+            return remoteStartups.Select(x => MapRemoteStartup(x)).ToList();
+        }
     }
 }
