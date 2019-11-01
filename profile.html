@@ -1,0 +1,320 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		
+		<title>Startup NURE</title>
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+		<link rel="stylesheet" href="styles.css">
+		
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body style="word-wrap: break-word;">
+		<div class="yep_bg"><img src="photo/yep_bg.png"></div>
+		
+		<header class="sticky-top" style="background-color: white">
+			<nav class="main-menu">
+				<div class="menu_block">
+					<a class="menu_yep" href="#"><img src="photo/yep.png" alt="Перейти до головної сторінки" height="40"></a>
+					<a class="menu_item" href="#">YEP!STARTER</a>
+					<a class="menu_item" href="#">STARTAP CLUB NURE</a>
+					<a class="menu_item" href="Startups.html">СТАРТАПИ</a>
+					<a class="menu_item" href="#">ПОДІЇ</a>
+					<div class="menu_item sub_item">
+						<a href="#">startuper2000 <img src="photo/temp_profile.jpg" height="20" style="border-radius: 30px; margin-left: 5px;"></a>
+						<div class="submenu">
+							<a class="submenu_item" href="#">МІЙ ПРОФІЛЬ</a>
+							<a class="submenu_item" href="#">МОЇ СТАРТАПИ</a>
+							<a class="submenu_item" href="#">МОЇ ПОДІЇ</a>
+							<a class="submenu_item" href="login.html">ВИХІД</a>
+						</div>
+					</div>
+					<a id="ntf" class="menu_ntf" href="#"><img src="photo/menu_ntf_black.png" height="20"></a>	
+				</div>
+			</nav>
+		</header>
+		
+		<div class="content">
+			
+			<article class="card-body mx-auto">
+				<div class="card" style="width: 100%">
+					<div class="card-header">
+						<div class="row">
+							<div class="col my-auto">Профіль користувача <a class="profile_user" href="?user_id=0">123</a></div>
+							<div class="col text-right my-auto"><!--IF OWNER--><a href="request_membership.php">Стати членом <i class="fas fa-arrow-alt-circle-up"></i></a> <a href="edit_profile.php"><i class="fas fa-pencil-alt"></i></a><!----><!--IF ADMIN<a class="text-success" href="add_membership.php">Надати членство <i class="fas fa-arrow-alt-circle-up"></i></a><a class="text-danger" href="ban_profile.php">Забанити <i class="fas fa-ban"></i></a>--></div>
+						</div>
+					</div>
+					
+					<div class="card-body">
+						<div class="row">
+							<div class="col-3 border-right">
+								<div class="card">
+									<img class="card-img-top" src="photo/temp_profile.jpg">
+									
+									<div class="card-header text-center">
+										<i class="far fa-calendar-alt"></i><small class = "text-muted"> Реєстрація: 10.10.2020 </small>
+									</div>
+									<div class="card-header text-center">
+										<small class = "text-muted"> Звичайний користувач </small>
+									</div>
+									<div class="card-header text-center">
+										<small class = "text-success"> Член клубу </small>
+									</div>
+									<div class="card-header text-center">
+										<small class = "text-danger"> Забанений користувач </small>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col">
+								<ul class="nav nav-tabs" id="profileTab" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link active" id="common-tab" data-toggle="tab" href="#common" role="tab" aria-controls="common" aria-selected="true">Загальне</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="bio-tab" data-toggle="tab" href="#bio" role="tab" aria-controls="bio" aria-selected="false">Біографія</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Контакти</a>
+									</li>
+								</ul>
+								<div class="tab-content" id="profileTabContent">
+									<div class="tab-pane fade show active" id="common" role="tabpanel" aria-labelledby="common-tab">
+										<div class="row m-2 border-bottom">
+											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="far fa-user"></i> Прізвище: </h4></div>
+											<!--<div class="col my-auto"><h4></h4></div>-->
+											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+										</div>
+										<div class="row m-2 border-bottom">
+											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="far fa-user"></i> Ім'я: </h4></div>
+											<!--<div class="col my-auto"><h4></h4></div>-->
+											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+										</div>
+										<div class="row m-2 border-bottom">
+											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="fas fa-transgender-alt"></i> Гендер: </h4></div>
+											<!--<div class="col my-auto"><h4></h4></div>-->
+											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+										</div>
+										<div class="row m-2 border-bottom">
+											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="fas fa-birthday-cake"></i> День народження: </h4></div>
+											<!--<div class="col my-auto"><h4></h4></div>-->
+											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+										</div>
+									</div>
+									<div class="tab-pane fade" id="bio" role="tabpanel" aria-labelledby="bio-tab">
+										<div class="container m-2">БІОГРАФІЯяівфівфівфів</div>
+									</div>
+									<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+										<div class="row m-2 border-bottom">
+											<div class="col-5 my-auto"><h4 class = "text-muted"><i class="fas fa-phone"></i> Телефон: </h4></div>
+											<!--<div class="col my-auto"><h4></h4></div>-->
+											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+										</div>
+										<div class="row m-2 border-bottom">
+											<div class="col-5 my-auto"><h4 class = "text-muted"><i class="far fa-envelope"></i> Електронна пошта: </h4></div>
+											<!--<div class="col my-auto"><h4></h4></div>-->
+											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+			
+		</div>
+		
+	</body>
+	
+	<!--<script>
+		var title, foundationYear, publicationDate, photo, description, website, phone, email;
+		var str = window.location.search.split('id=');
+		if (str.length != 1 ? str[1].match(/\d+/) != null : false) 
+			id = +str[1];
+		/*else
+			window.location.href = "Startups.html";*/
+
+		fetch('http://eliasb13-001-site1.itempurl.com/api/users/user?id=' + id)
+			.then(handleResponse)
+			.then(function(data) {
+				document.getElementById('titleInp').value = data.title; // + загрузка фото
+				document.getElementById('descriptionInp').value = data.description;
+				document.getElementById('websiteInp').value = data.website;
+				document.getElementById('phoneInp').value = data.phone;
+				document.getElementById('emailInp').value = data.email;
+				foundationYear = data.foundationYear;
+				publicationDate = data.publicationDate;
+			});
+			
+		function handleResponse(response) {
+			return response.text().then(text => {
+				const data = text && JSON.parse(text);
+
+				if (!response.ok) {
+					const error = (data && data.message) || response.statusText;
+
+					return Promise.reject(error);
+				}
+
+				return data;
+			});
+		}
+		
+		function saveStartup(event) { // connect to post
+			event.preventDefault();
+	
+			title = document.getElementById("titleInp").value;
+			description = document.getElementById("descriptionInp").value;
+			website = document.getElementById("websiteInp").value;
+			phone = document.getElementById("phoneInp").value;
+			email = document.getElementById("emailInp").value;
+
+			if(title && description) { // add some validation
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify( { startupId: id, 
+											title: title, 
+											foundationYear: foundationYear, 
+											publicationDate: publicationDate,
+											photo: "null", // edit photo
+											description: description,
+											website: website,
+											phone: phone,
+											email: email
+										})
+				};
+
+			fetch(window.env.apiUrl /*right api*/, requestOptions)
+				.then(handleResponse)
+				.then(data => alert(JSON.stringify(data)));
+			}
+		}
+
+	</script>
+	
+	
+	<script>
+	$(window).bind('scroll',function(e){
+    parallaxScroll();
+});
+ 
+function parallaxScroll(){
+    var scrolled = $(window).scrollTop();
+    $('.yep_bg').css('top',(250+(scrolled*.3))+'px');
+    $('.content').css('top',(0-(scrolled*.5))+'px');
+}
+	</script>
+	<script>
+		window.onload = function() {
+		var ntf = document.getElementById('ntf');
+		var child = ntf.firstChild;
+		ntf.onmouseover = function(){
+			child.src = 'photo/menu_ntf_white.png';
+			ntf.style.backgroundColor = '#f18415';
+		}
+		ntf.onmouseout = function(){
+			child.src = 'photo/menu_ntf_black.png';
+			ntf.style.backgroundColor = '#ffffff';
+		}
+		}
+	</script>
+	<script>
+	// Targets all textareas with class "txta"
+let textareas = document.querySelectorAll('.txta'),
+    hiddenDiv = document.createElement('div'),
+    content = null;
+
+// Adds a class to all textareas
+for (let j of textareas) {
+  j.classList.add('txtstuff');
+}
+
+// Build the hidden div's attributes
+
+// The line below is needed if you move the style lines to CSS
+// hiddenDiv.classList.add('hiddendiv');
+
+// Add the "txta" styles, which are common to both textarea and hiddendiv
+// If you want, you can remove those from CSS and add them via JS
+hiddenDiv.classList.add('txta');
+
+// Add the styles for the hidden div
+// These can be in the CSS, just remove these three lines and uncomment the CSS
+hiddenDiv.style.display = 'none';
+hiddenDiv.style.whiteSpace = 'pre-wrap';
+hiddenDiv.style.wordWrap = 'break-word';
+
+// Loop through all the textareas and add the event listener
+for(let i of textareas) {
+  (function(i) {
+    // Note: Use 'keyup' instead of 'input'
+    // if you want older IE support
+    i.addEventListener('input', function() {
+	
+      // Append hiddendiv to parent of textarea, so the size is correct
+      i.parentNode.appendChild(hiddenDiv);
+      
+      // Remove this if you want the user to be able to resize it in modern browsers
+      i.style.resize = 'none';
+      
+      // This removes scrollbars
+      i.style.overflow = 'hidden';
+
+      // Every input/change, grab the content
+      content = i.value;
+
+      // Add the same content to the hidden div
+      
+      // This is for old IE
+      content = content.replace(/\n/g, '<br>');
+      
+      // The <br ..> part is for old IE
+      // This also fixes the jumpy way the textarea grows if line-height isn't included
+      hiddenDiv.innerHTML = content + '<br style="line-height: 3px;">';
+
+      // Briefly make the hidden div block but invisible
+      // This is in order to read the height
+      hiddenDiv.style.visibility = 'hidden';
+      hiddenDiv.style.display = 'block';
+      i.style.height = hiddenDiv.offsetHeight + 'px';
+
+      // Make the hidden div display:none again
+      hiddenDiv.style.visibility = 'visible';
+      hiddenDiv.style.display = 'none';
+    });
+  })(i);
+}
+	</script>
+<script>
+	// Upload startup image
+	function readURL(input) {
+		if (input.files && input.files[0]) {
+
+			var reader = new FileReader();
+
+			reader.onload = function (e) {
+				$('.file-upload-image').attr('src', e.target.result);
+				$('.image-upload-wrap').show();
+				$('.image-title').html(input.files[0].name);
+			};
+
+			reader.readAsDataURL(input.files[0]);
+
+		}  else {
+			$('.image-upload-wrap').hide();
+		}
+	}
+
+	function removeUpload(){
+		$('.file-upload-input').replaceWith($('.file-upload-input').clone());
+		$('.image-upload-wrap').hide();
+	}
+</script>-->
