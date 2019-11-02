@@ -46,6 +46,9 @@ namespace SCNURE_BACKEND.Controllers
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
+			if (user.Ban)
+				return BadRequest(new { message = "User is banned" });
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
