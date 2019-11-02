@@ -120,7 +120,7 @@ namespace SCNURE_BACKEND.Controllers
 		}
 
 		[AllowAnonymous]
-		[HttpGet("profile/{userId}")]
+		[HttpGet("profile")]
 		public async Task<IActionResult> GetUserProfile([Required]int userId)
 		{
 			try
@@ -135,16 +135,30 @@ namespace SCNURE_BACKEND.Controllers
 		}
 
 		[HttpGet("accountData")]
-		public async Task<IActionResult> GetAccountData()
+		public async Task<IActionResult> GetAccountData(int? userId)
 		{
 			try
 			{
 				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
 				if (contextUserId == 0)
-					return BadRequest("No such user");
+					return BadRequest(new { message = "Unathorized" });
 
-				var user = await _userService.GetAccountData(contextUserId);
-				return Ok(user);
+				var contextUser = await _userService.GetByIdAsync(contextUserId);
+
+				if (userId.HasValue && contextUserId != userId && contextUser.Admin)
+				{
+					var user = await _userService.GetAccountData(userId.Value);
+					return Ok(user);
+				}
+				else if (userId.HasValue && contextUserId != userId && !contextUser.Admin)
+				{
+					return BadRequest(new { message = "You have no permissions for that" });
+				}
+				else
+				{
+					var user = await _userService.GetAccountData(contextUserId);
+					return Ok(user);
+				}
 			}
 			catch (ArgumentException ex)
 			{
