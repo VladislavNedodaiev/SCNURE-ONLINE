@@ -6,7 +6,7 @@ if (usrid == null) {
 	if (window.localStorage.getItem('user_id'))
 		usrid = window.localStorage.getItem('user_id');
 	else
-		window.location.href = "startups.html?error=";//encodeURI(text)
+		window.location.href = "startups.html?error="+encodeURI("Такого користувача не існує!");//encodeURI(text)
 }
 
 fetch(env.apiUrl + '/api/Accounts/profile/' + usrid)
@@ -95,6 +95,8 @@ function handleResponse(response) {
 		if (!response.ok) {
 			const error = (data && data.message) || response.statusText;
 
+			window.location.href = "startups.html?error="+encodeURI("Такого користувача не існує!");
+			
 			return Promise.reject(error);
 		}
 
