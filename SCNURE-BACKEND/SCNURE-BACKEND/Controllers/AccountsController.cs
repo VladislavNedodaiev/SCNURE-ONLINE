@@ -64,7 +64,8 @@ namespace SCNURE_BACKEND.Controllers
             {
                 Id = user.UserId,
                 Login = user.Login,
-                Token = tokenString
+                Token = tokenString,
+				IsAdmin = user.Admin
             });
         }
 
