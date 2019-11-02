@@ -46,8 +46,8 @@
 				<div class="card" style="width: 100%">
 					<div class="card-header">
 						<div class="row">
-							<div class="col my-auto">Профіль користувача <a class="profile_user" href="?user_id=0">123</a></div>
-							<div class="col text-right my-auto"><!--IF OWNER--><a href="request_membership.php">Стати членом <i class="fas fa-arrow-alt-circle-up"></i></a> <a href="edit_profile.php"><i class="fas fa-pencil-alt"></i></a><!----><!--IF ADMIN<a class="text-success" href="add_membership.php">Надати членство <i class="fas fa-arrow-alt-circle-up"></i></a><a class="text-danger" href="ban_profile.php">Забанити <i class="fas fa-ban"></i></a>--></div>
+							<div class="col my-auto">Профіль користувача <a id="username"></a></div>
+							<div class="col text-right my-auto"><span id="membership"></span><span id="edit"></span><span id="ban"></span></div>
 						</div>
 					</div>
 					
@@ -55,20 +55,12 @@
 						<div class="row">
 							<div class="col-3 border-right">
 								<div class="card">
-									<img class="card-img-top" src="photo/temp_profile.jpg">
+									<img id='photo' class="card-img-top" src="photo/temp_profile.jpg">
 									
 									<div class="card-header text-center">
-										<i class="far fa-calendar-alt"></i><small class = "text-muted"> Реєстрація: 10.10.2020 </small>
+										<i class="far fa-calendar-alt"></i><small class = "text-muted"> Реєстрація: <span id='registerDate'>10.10.2020</span> </small>
 									</div>
-									<div class="card-header text-center">
-										<small class = "text-muted"> Звичайний користувач </small>
-									</div>
-									<div class="card-header text-center">
-										<small class = "text-success"> Член клубу </small>
-									</div>
-									<div class="card-header text-center">
-										<small class = "text-danger"> Забанений користувач </small>
-									</div>
+									<div id='membership_status' class="card-header text-center"></div>
 								</div>
 							</div>
 							
@@ -88,38 +80,32 @@
 									<div class="tab-pane fade show active" id="common" role="tabpanel" aria-labelledby="common-tab">
 										<div class="row m-2 border-bottom">
 											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="far fa-user"></i> Прізвище: </h4></div>
-											<!--<div class="col my-auto"><h4></h4></div>-->
-											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+											<div class="col my-auto"><h4 id='secondName'><i class="text-muted">Інформація прихована</i></h4></div>
 										</div>
 										<div class="row m-2 border-bottom">
 											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="far fa-user"></i> Ім'я: </h4></div>
-											<!--<div class="col my-auto"><h4></h4></div>-->
-											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+											<div class="col my-auto"><h4 id='firstName'><i class="text-muted">Інформація прихована</i></h4></div>
 										</div>
 										<div class="row m-2 border-bottom">
 											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="fas fa-transgender-alt"></i> Гендер: </h4></div>
-											<!--<div class="col my-auto"><h4></h4></div>-->
-											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+											<div class="col my-auto"><h4 id='gender'><i class="text-muted">Інформація прихована</i></h4></div>
 										</div>
 										<div class="row m-2 border-bottom">
 											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="fas fa-birthday-cake"></i> День народження: </h4></div>
-											<!--<div class="col my-auto"><h4></h4></div>-->
-											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+											<div class="col my-auto"><h4 id='birthday'><i class="text-muted">Інформація прихована</i></h4></div>
 										</div>
 									</div>
 									<div class="tab-pane fade" id="bio" role="tabpanel" aria-labelledby="bio-tab">
-										<div class="container m-2">БІОГРАФІЯяівфівфівфів</div>
+										<div id='description' class="container m-2"><i class="text-muted">Інформація прихована</i></div>
 									</div>
 									<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 										<div class="row m-2 border-bottom">
 											<div class="col-5 my-auto"><h4 class = "text-muted"><i class="fas fa-phone"></i> Телефон: </h4></div>
-											<!--<div class="col my-auto"><h4></h4></div>-->
-											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+											<div class="col my-auto"><h4 id='phone'><i class="text-muted">Інформація прихована</i></h4></div>
 										</div>
 										<div class="row m-2 border-bottom">
 											<div class="col-5 my-auto"><h4 class = "text-muted"><i class="far fa-envelope"></i> Електронна пошта: </h4></div>
-											<!--<div class="col my-auto"><h4></h4></div>-->
-											<div class="col my-auto"><h4 class = "text-muted"><i>Інформація прихована</i></h4></div>
+											<div class="col my-auto"><h4 id='email'><i class="text-muted">Інформація прихована</i></h4></div>
 										</div>
 									</div>
 								</div>
@@ -133,26 +119,98 @@
 		
 	</body>
 	
-	<!--<script>
-		var title, foundationYear, publicationDate, photo, description, website, phone, email;
-		var str = window.location.search.split('id=');
-		if (str.length != 1 ? str[1].match(/\d+/) != null : false) 
-			id = +str[1];
-		/*else
-			window.location.href = "Startups.html";*/
+	<script>
+	
+		var url = new URL(window.location.href);
+		var usrid = url.searchParams.get("user_id");
+		
+		if (usrid == null) {
+			
+			if (window.localStorage.getItem('user_id'))
+				usrid = window.localStorage.getItem('user_id');
+			else
+				window.location.href = "startups.html?error=";//encodeURI(text)
+		}
 
-		fetch('http://eliasb13-001-site1.itempurl.com/api/users/user?id=' + id)
+		fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile/' + usrid)
 			.then(handleResponse)
 			.then(function(data) {
-				document.getElementById('titleInp').value = data.title; // + загрузка фото
-				document.getElementById('descriptionInp').value = data.description;
-				document.getElementById('websiteInp').value = data.website;
-				document.getElementById('phoneInp').value = data.phone;
-				document.getElementById('emailInp').value = data.email;
-				foundationYear = data.foundationYear;
-				publicationDate = data.publicationDate;
+
+				showProfile(data);
+				
+				if (url.searchParams.get('user_id') == window.localStorage.getItem('user_id'))
+					showOwnProfile(data);
+				
+				if (window.localStorage.getItem('admin') == true)
+					showForAdmin(data);
+				
 			});
 			
+		function showProfile(data) {
+		
+			document.getElementById('username').href = data.user_id;
+			document.getElementById('username').innerHTML = data.login;
+			document.getElementById('registerDate').innerHTML = data.registerDate.substr(0, 10);
+				
+			if (data.ban)
+				document.getElementById('membership_status').innerHTML = '<small class = "text-danger"> Забанений користувач </small>';
+			else if (data.membership == 1)
+				document.getElementById('membership_status').innerHTML = '<small class = "text-success"> Член клубу </small>';
+			else
+				document.getElementById('membership_status').innerHTML = '<small class = "text-muted"> Звичайний користувач </small>';
+			
+			
+			if (data.secondName)
+				document.getElementById('secondName').innerHTML = data.secondName;
+				
+			if (data.firstName)
+				document.getElementById('firstName').innerHTML = data.firstName;
+				
+			if (data.gender == 'Male')
+				document.getElementById('gender').innerHTML = 'Чоловіча';
+			else if (data.gender == 'Female')
+				document.getElementById('gender').innerHTML = 'Жіноча';
+			
+			if (data.description)
+				document.getElementById('description').innerHTML = data.description;
+				
+			if (data.photo)
+				document.getElementById('photo').src = data.photo;
+				
+			if (data.birthday)
+				document.getElementById('birthday').innerHTML = data.birthday;
+			
+			if (data.phone)
+				document.getElementById('phone').innerHTML = data.phone;
+				
+			if (data.email)
+				document.getElementById('email').innerHTML = data.email;
+		
+		}
+		
+		function showOwnProfile(data) {
+		
+			if (data.membership == 0)
+				document.getElementById('membership').innerHTML = '<a href="request_membership">Стати членом <i class="fas fa-arrow-alt-circle-up"></i></a> ';
+			else if (data.membership == 2) 
+				document.getElementById('membership').innerHTML = '<span class="text-muted">Запит на членство надіслано</span> ';
+				
+			document.getElementById('edit').innerHTML= '<a href="edit_profile.php"><i class="fas fa-pencil-alt"></i></a>';
+			
+			showEverythingProfile(data);
+		
+		}
+		
+		function showForAdmin(data) {
+		
+			document.getElementById('membership').innerHTML = '<a class="text-success" href="add_member.php">Надати членство <i class="fas fa-arrow-alt-circle-up"></i></a>';
+		
+			document.getElementById('ban').innerHTML = '<a class="text-danger" href="ban">Забанити <i class="fas fa-ban"></i></a>';
+			
+			showEverythingProfile(data);
+		
+		}
+		
 		function handleResponse(response) {
 			return response.text().then(text => {
 				const data = text && JSON.parse(text);
@@ -165,37 +223,6 @@
 
 				return data;
 			});
-		}
-		
-		function saveStartup(event) { // connect to post
-			event.preventDefault();
-	
-			title = document.getElementById("titleInp").value;
-			description = document.getElementById("descriptionInp").value;
-			website = document.getElementById("websiteInp").value;
-			phone = document.getElementById("phoneInp").value;
-			email = document.getElementById("emailInp").value;
-
-			if(title && description) { // add some validation
-				const requestOptions = {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify( { startupId: id, 
-											title: title, 
-											foundationYear: foundationYear, 
-											publicationDate: publicationDate,
-											photo: "null", // edit photo
-											description: description,
-											website: website,
-											phone: phone,
-											email: email
-										})
-				};
-
-			fetch(window.env.apiUrl /*right api*/, requestOptions)
-				.then(handleResponse)
-				.then(data => alert(JSON.stringify(data)));
-			}
 		}
 
 	</script>
@@ -292,29 +319,4 @@ for(let i of textareas) {
     });
   })(i);
 }
-	</script>
-<script>
-	// Upload startup image
-	function readURL(input) {
-		if (input.files && input.files[0]) {
-
-			var reader = new FileReader();
-
-			reader.onload = function (e) {
-				$('.file-upload-image').attr('src', e.target.result);
-				$('.image-upload-wrap').show();
-				$('.image-title').html(input.files[0].name);
-			};
-
-			reader.readAsDataURL(input.files[0]);
-
-		}  else {
-			$('.image-upload-wrap').hide();
-		}
-	}
-
-	function removeUpload(){
-		$('.file-upload-input').replaceWith($('.file-upload-input').clone());
-		$('.image-upload-wrap').hide();
-	}
-</script>-->
+</script>
