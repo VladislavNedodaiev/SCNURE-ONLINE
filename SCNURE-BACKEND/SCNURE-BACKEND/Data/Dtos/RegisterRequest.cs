@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SCNURE_BACKEND.Data.Dtos
 {
-	public class RegisterDto
+	public class RegisterRequest
 	{
 		[Required]
 		public string Login { get; set; }

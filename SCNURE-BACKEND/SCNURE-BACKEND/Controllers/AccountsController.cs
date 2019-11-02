@@ -20,28 +20,26 @@ using System.Threading.Tasks;
 
 namespace SCNURE_BACKEND.Controllers
 {
+	[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
         private readonly IUserService _userService;
-		//private readonly UserManager<User> _userManager;
         private readonly JwtSettings _jwtSettings;
 		private readonly IEmailService _emailService;
 
-        public AccountsController(IUserService userService, IOptions<JwtSettings> jwtSettings, 
-			//UserManager<User> userManager
+        public AccountsController(IUserService userService, IOptions<JwtSettings> jwtSettings,
 			IEmailService emailService)
         {
             _userService = userService;
             _jwtSettings = jwtSettings.Value;
-			//_userManager = userManager;
 			_emailService = emailService;
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Authenticate([FromBody]LoginDto userDto)
+        public async Task<IActionResult> Authenticate([FromBody]LoginRequest userDto)
         {
             var user = await _userService.AuthenticateAsync(userDto.LoginOrEmail, userDto.Password);
 
@@ -72,7 +70,7 @@ namespace SCNURE_BACKEND.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync([FromBody]RegisterDto userDto)
+        public async Task<IActionResult> RegisterAsync([FromBody]RegisterRequest userDto)
         {
             try
             {
@@ -109,6 +107,39 @@ namespace SCNURE_BACKEND.Controllers
 			{
 				await _userService.ConfirmUserEmailAsync(token);
 				return Ok();
+			}
+			catch (ArgumentException ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[AllowAnonymous]
+		[HttpGet("profile/{userId}")]
+		public async Task<IActionResult> GetUserProfile([Required]int userId)
+		{
+			try
+			{
+				var user = await _userService.GetUserProfile(userId);
+				return Ok(user);
+			}
+			catch (ArgumentException ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[HttpGet("accountData")]
+		public async Task<IActionResult> GetAccountData()
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+				if (contextUserId == 0)
+					return BadRequest("No such user");
+
+				var user = await _userService.GetAccountData(contextUserId);
+				return Ok(user);
 			}
 			catch (ArgumentException ex)
 			{
