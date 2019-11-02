@@ -1,3 +1,13 @@
+var photo = document.getElementById('photo');
+var filepath = document.getElementById('filepath');
+
+photo.onchange = function() {
+	
+	filepath.style="display: block;";
+	filepath.innerHTML="<small>" + photo.value.split(/(\\|\/)/g).pop() + "</small>";
+	
+}
+
 var url = new URL(window.location.href);
 var usrid = url.searchParams.get("user_id");
 

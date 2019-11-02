@@ -44,9 +44,9 @@ function showProfile(data) {
 		document.getElementById('firstName').innerHTML = data.firstName;
 		
 	if (data.gender == 'Male')
-		document.getElementById('gender').innerHTML = 'Чоловіча';
+		document.getElementById('gender').innerHTML = 'Чоловічий';
 	else if (data.gender == 'Female')
-		document.getElementById('gender').innerHTML = 'Жіноча';
+		document.getElementById('gender').innerHTML = 'Жіночий';
 	
 	if (data.description)
 		document.getElementById('description').innerHTML = data.description;

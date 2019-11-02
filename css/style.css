@@ -102,6 +102,15 @@
   resize: none;
 }
 
+.btn-cancel {
+	width: 30%;
+	margin: 70px auto 0;
+	border-radius: 20px;
+	background-color:white;
+	font-weight: bold;
+	color: #f18415;
+	border: 2px #f18415 solid;
+}
 .btn-create {
 	width: 30%;
 	margin: 70px auto 0;
