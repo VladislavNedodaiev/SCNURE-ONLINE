@@ -41,86 +41,86 @@
 		</header>
 		
 		<div class="content">
-			
-			<article class="card-body mx-auto">
-				<div class="card" style="width: 100%">
-					<div class="card-header">
-						<div class="row">
-							<div class="col my-auto">Профіль користувача <a id="username"></a></div>
-							<div class="col text-right my-auto"><span id="membership"></span><span id="edit"></span><span id="ban"></span></div>
+			<h2 class="text-center">РЕДАГУВАННЯ ПРОФІЛЮ <a id="username"></a></h4>
+			<form method="POST" onsubmit="saveStartup(event)">
+
+				<div class="group">      
+					<input id="firstName" type="text" required>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<label>Введіть ваше прізвище</label>
+				</div>
+				<div class="group">      
+					<input id="secondName" type="text" required>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<label>Введіть ваше ім'я</label>
+				</div>
+				
+				<div class="group">Гендер
+				<select class="browser-default form-control custom-select custom-select mt-2">
+					<option value="0" selected>Не визначений</option>
+					<option value="1">Чоловічий</option>
+					<option value="2">Жіночий</option>
+				</select>
+				</div>
+				
+				<div class="group">Дата Народження    
+					<input id="secondName" type="date" required>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+				</div>
+				
+				<div class="file-upload">
+					<button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Завантажити зображення</button>
+					<input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+					<div class="image-upload-wrap" style="display:none">
+						<div class="image-title-wrap">
+							<span class="image-title">Завантажене зображення</span>
+							<button type="button" onclick="removeUpload()" class="remove-image">X</button>
 						</div>
-					</div>
-					
-					<div class="card-body">
-						<div class="row">
-							<div class="col-3 border-right">
-								<div class="card">
-									<img id='photo' class="card-img-top" src="photo/temp_profile.jpg">
-									
-									<div class="card-header text-center">
-										<i class="far fa-calendar-alt"></i><small class = "text-muted"> Реєстрація: <span id='registerDate'>10.10.2020</span> </small>
-									</div>
-									<div id='membership_status' class="card-header text-center"></div>
-								</div>
-							</div>
-							
-							<div class="col">
-								<ul class="nav nav-tabs" id="profileTab" role="tablist">
-									<li class="nav-item">
-										<a class="nav-link active" id="common-tab" data-toggle="tab" href="#common" role="tab" aria-controls="common" aria-selected="true">Загальне</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" id="bio-tab" data-toggle="tab" href="#bio" role="tab" aria-controls="bio" aria-selected="false">Біографія</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Контакти</a>
-									</li>
-								</ul>
-								<div class="tab-content" id="profileTabContent">
-									<div class="tab-pane fade show active" id="common" role="tabpanel" aria-labelledby="common-tab">
-										<div class="row m-2 border-bottom">
-											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="far fa-user"></i> Прізвище: </h4></div>
-											<div class="col my-auto"><h4 id='secondName'><i class="text-muted">Інформація прихована</i></h4></div>
-										</div>
-										<div class="row m-2 border-bottom">
-											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="far fa-user"></i> Ім'я: </h4></div>
-											<div class="col my-auto"><h4 id='firstName'><i class="text-muted">Інформація прихована</i></h4></div>
-										</div>
-										<div class="row m-2 border-bottom">
-											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="fas fa-transgender-alt"></i> Гендер: </h4></div>
-											<div class="col my-auto"><h4 id='gender'><i class="text-muted">Інформація прихована</i></h4></div>
-										</div>
-										<div class="row m-2 border-bottom">
-											<div class="col-6 my-auto"><h4 class = "text-muted"><i class="fas fa-birthday-cake"></i> День народження: </h4></div>
-											<div class="col my-auto"><h4 id='birthday'><i class="text-muted">Інформація прихована</i></h4></div>
-										</div>
-									</div>
-									<div class="tab-pane fade" id="bio" role="tabpanel" aria-labelledby="bio-tab">
-										<div id='description' class="container m-2"><i class="text-muted">Інформація прихована</i></div>
-									</div>
-									<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-										<div class="row m-2 border-bottom">
-											<div class="col-5 my-auto"><h4 class = "text-muted"><i class="fas fa-phone"></i> Телефон: </h4></div>
-											<div class="col my-auto"><h4 id='phone'><i class="text-muted">Інформація прихована</i></h4></div>
-										</div>
-										<div class="row m-2 border-bottom">
-											<div class="col-5 my-auto"><h4 class = "text-muted"><i class="far fa-envelope"></i> Електронна пошта: </h4></div>
-											<div class="col my-auto"><h4 id='email'><i class="text-muted">Інформація прихована</i></h4></div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+						<img class="file-upload-image" src="photo/temp_profile.jpg" alt="your image"/>
 					</div>
 				</div>
-			</article>
-			
+					
+				<div class="group">      
+					<textarea id="description" class="txta" name="comment" required></textarea>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<label>Ваша автобіографія</label>
+				</div>				
+				
+				<h4 style="margin-bottom: 30px;" >Контактна інформація</h4>
+				
+				<h5 class="fas fa-phone contact-icon"></h5>
+				<div class="group contact">      
+					<input id="phone" type="text" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<label>Телефон</label>
+				</div>
+				
+				<h5 class="far fa-envelope contact-icon"></h5>
+				<div class="group contact">      
+					<input id="email" type="text">
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<label>Електронна пошта</label>
+				</div>
+				
+	
+				<div class="text-center form-group">
+					<button type="submit" class="btn btn-create btn-block">Зберегти</button>
+					<br><a class="text-danger" href="profile.html">Скасувати зміни</a>
+				</div>
+				
+			</form>
 		</div>
 		
 	</body>
 
 <script src='env.js'></script>
-<script src='profile.js'></script>
+<!--<script src='edit_profile.js'></script>-->
 <script src='parallax.js'></script>
 
 </html>
