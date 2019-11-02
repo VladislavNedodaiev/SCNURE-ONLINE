@@ -9,7 +9,7 @@ if (usrid == null) {
 		window.location.href = "startups.html?error=";//encodeURI(text)
 }
 
-fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile/' + usrid)
+fetch(env.apiUrl + '/api/Accounts/profile/' + usrid)
 	.then(handleResponse)
 	.then(function(data) {
 
