@@ -1,102 +1,51 @@
-var photo = document.getElementById('photo');
-var filepath = document.getElementById('filepath');
-
-photo.onchange = function() {
-	
-	filepath.style="display: block;";
-	filepath.innerHTML="<small>" + photo.value.split(/(\\|\/)/g).pop() + "</small>";
-	
-}
-
 var url = new URL(window.location.href);
 var usrid = url.searchParams.get("user_id");
 
-if (usrid == null) {
+/*if (usrid == null) {
 	
 	if (window.localStorage.getItem('user_id'))
 		usrid = window.localStorage.getItem('user_id');
 	else
-		window.location.href = "startups.html?error="+encodeURI("Такого користувача не існує!");//encodeURI(text)
+		window.location.href = "startups.html?error=" + encodeURI("Такого користувача не існує!");
 }
 else if (window.localStorage.getItem('user_id') && usrid != window.localStorage.getItem('user_id'))
-	window.location.href = "startups.html?error="+encodeURI("Ви не маєте права редагувати цей профіль!");//encodeURI(text)
+	window.location.href = "startups.html?error=" + encodeURI("Ви не маєте права редагувати цей профіль!");*/
 
-fetch(env.apiUrl + '/api/Accounts/profile/' + usrid)
+fetch(env.apiUrl + '/api/Accounts/profile?userId=' + usrid)
 	.then(handleResponse)
 	.then(function(data) {
 		
 		showProfile(data);
 		
-		if (url.searchParams.get('user_id') == window.localStorage.getItem('user_id'))
-			showOwnProfile(data);
-		
-		if (window.localStorage.getItem('admin') == true)
-			showForAdmin(data);
-		
 	});
 	
 function showProfile(data) {
 
-	document.getElementById('username').href = data.user_id;
-	document.getElementById('username').innerHTML = data.login;
-	document.getElementById('registerDate').innerHTML = data.registerDate.substr(0, 10);
-		
-	if (data.ban)
-		document.getElementById('membership_status').innerHTML = '<small class = "text-danger"> Забанений користувач </small>';
-	else if (data.membership == 1)
-		document.getElementById('membership_status').innerHTML = '<small class = "text-success"> Член клубу </small>';
-	else
-		document.getElementById('membership_status').innerHTML = '<small class = "text-muted"> Звичайний користувач </small>';
-	
+	document.getElementById('username').href = usrid;
+	document.getElementById('username').innerHTML = data.login;	
 	
 	if (data.secondName)
-		document.getElementById('secondName').innerHTML = data.secondName;
+		document.getElementById('secondName').value = data.secondName;
 		
 	if (data.firstName)
-		document.getElementById('firstName').innerHTML = data.firstName;
+		document.getElementById('firstName').value = data.firstName;
 		
 	if (data.gender == 'Male')
-		document.getElementById('gender').innerHTML = 'Чоловіча';
+		document.getElementById('gender').value = 1;
 	else if (data.gender == 'Female')
-		document.getElementById('gender').innerHTML = 'Жіноча';
+		document.getElementById('gender').value = 2;
 	
 	if (data.description)
-		document.getElementById('description').innerHTML = data.description;
-		
-	if (data.photo)
-		document.getElementById('photo').src = data.photo;
+		document.getElementById('description').value = data.description;
 		
 	if (data.birthday)
-		document.getElementById('birthday').innerHTML = data.birthday;
+		document.getElementById('birthday').value = data.birthday;
 	
 	if (data.phone)
-		document.getElementById('phone').innerHTML = data.phone;
+		document.getElementById('phone').value = data.phone;
 		
 	if (data.email)
-		document.getElementById('email').innerHTML = data.email;
-
-}
-
-function showOwnProfile(data) {
-
-	if (data.membership == 0)
-		document.getElementById('membership').innerHTML = '<a href="request_membership">Стати членом <i class="fas fa-arrow-alt-circle-up"></i></a> ';
-	else if (data.membership == 2) 
-		document.getElementById('membership').innerHTML = '<span class="text-muted">Запит на членство надіслано</span> ';
-		
-	document.getElementById('edit').innerHTML= '<a href="edit_profile.php"><i class="fas fa-pencil-alt"></i></a>';
-	
-	showEverythingProfile(data);
-
-}
-
-function showForAdmin(data) {
-
-	document.getElementById('membership').innerHTML = '<a class="text-success" href="add_member.php">Надати членство <i class="fas fa-arrow-alt-circle-up"></i></a>';
-
-	document.getElementById('ban').innerHTML = '<a class="text-danger" href="ban">Забанити <i class="fas fa-ban"></i></a>';
-	
-	showEverythingProfile(data);
+		document.getElementById('email').value = data.email;
 
 }
 
@@ -114,4 +63,27 @@ function handleResponse(response) {
 
 		return data;
 	});
+}
+
+function readURL(input) {
+	if (input.files && input.files[0]) {
+
+		var reader = new FileReader();
+
+		reader.onload = function (e) {
+			$('.file-upload-image').attr('src', e.target.result);
+			$('.image-upload-wrap').show();
+			$('.image-title').html(input.files[0].name);
+		};
+
+		reader.readAsDataURL(input.files[0]);
+
+	}  else {
+		$('.image-upload-wrap').hide();
+	}
+}
+
+function removeUpload(){
+	$('.file-upload-input').replaceWith($('.file-upload-input').clone());
+	$('.image-upload-wrap').hide();
 }

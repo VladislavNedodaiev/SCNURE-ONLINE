@@ -6,10 +6,10 @@ if (usrid == null) {
 	if (window.localStorage.getItem('user_id'))
 		usrid = window.localStorage.getItem('user_id');
 	else
-		window.location.href = "startups.html?error="+encodeURI("Такого користувача не існує!");//encodeURI(text)
+		window.location.href = "startups.html?error=" + encodeURI("Такого користувача не існує!");//encodeURI(text)
 }
 
-fetch(env.apiUrl + '/api/Accounts/profile/' + usrid)
+fetch(env.apiUrl + '/api/Accounts/profile?userId=' + usrid)
 	.then(handleResponse)
 	.then(function(data) {
 
@@ -25,7 +25,7 @@ fetch(env.apiUrl + '/api/Accounts/profile/' + usrid)
 	
 function showProfile(data) {
 
-	document.getElementById('username').href = data.user_id;
+	document.getElementById('username').href = usrid;
 	document.getElementById('username').innerHTML = data.login;
 	document.getElementById('registerDate').innerHTML = data.registerDate.substr(0, 10);
 		
