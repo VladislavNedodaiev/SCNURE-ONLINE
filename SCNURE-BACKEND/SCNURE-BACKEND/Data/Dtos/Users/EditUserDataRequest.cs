@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SCNURE_BACKEND.Data.Dtos.Users
 {
-	public class AccountDataResponse
+	public class EditUserDataRequest
 	{
-		public bool IsEmailConfirmed { get; set; }
+		public int Id { get; set; }
 		public string Login { get; set; }
 		public string FirstName { get; set; }
 		public string SecondName { get; set; }
@@ -20,8 +20,5 @@ namespace SCNURE_BACKEND.Data.Dtos.Users
 		public DateTime RegisterDate { get; set; }
 		public string Email { get; set; }
 		public bool ShowEmail { get; set; }
-		public bool Admin { get; set; }
-		public bool Membership { get; set; }
-		public bool Ban { get; set; }
 	}
 }

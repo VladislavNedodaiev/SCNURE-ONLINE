@@ -15,6 +15,7 @@ namespace SCNURE_BACKEND.Services.Users
 		Task<User> RegisterAsync(RegisterRequest userDto);
 		Task ConfirmUserEmailAsync(string token);
 		Task<UserProfileResponse> GetUserProfile(int userId);
-		Task<AccountDataResponse> GetAccountData(int userId);
+		Task<UserDataResponse> GetAccountData(int userId);
+		Task UpdateUser(EditUserDataRequest user);
     }
 }

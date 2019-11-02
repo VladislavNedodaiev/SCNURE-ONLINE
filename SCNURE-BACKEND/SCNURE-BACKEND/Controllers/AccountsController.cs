@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SCNURE_BACKEND.Data;
 using SCNURE_BACKEND.Data.Dtos;
+using SCNURE_BACKEND.Data.Dtos.Users;
 using SCNURE_BACKEND.Data.Entities;
 using SCNURE_BACKEND.Helpers;
 using SCNURE_BACKEND.Services.Email;
@@ -146,6 +147,21 @@ namespace SCNURE_BACKEND.Controllers
 				return Ok(user);
 			}
 			catch (ArgumentException ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[Authorize]
+ 		[HttpPut]
+		public async Task<IActionResult> EditUser([FromBody]EditUserDataRequest user)
+		{
+			try
+			{
+				await _userService.UpdateUser(user);
+				return Ok();
+			}
+			catch (Exception ex)
 			{
 				return BadRequest(new { message = ex.Message });
 			}

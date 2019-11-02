@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace SCNURE_BACKEND.Data.Entities
@@ -35,11 +36,17 @@ namespace SCNURE_BACKEND.Data.Entities
         public bool Membership { get; set; }
         public bool Ban { get; set; }
 
+		[JsonIgnore]
         public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Like> Likes { get; set; }
-        public virtual ICollection<Notification> Notifications { get; set; }
-        public virtual ICollection<Participant> Participants { get; set; }
-        public virtual ICollection<Reward> Rewards { get; set; }
-        public virtual ICollection<TeamMember> TeamMembers { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<Like> Likes { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<Notification> Notifications { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<Participant> Participants { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<Reward> Rewards { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<TeamMember> TeamMembers { get; set; }
     }
 }

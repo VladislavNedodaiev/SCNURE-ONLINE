@@ -136,13 +136,25 @@ namespace SCNURE_BACKEND.Services.Users
 			return user.ToUserProfileResponse();
 		}
 
-		public async Task<AccountDataResponse> GetAccountData(int userId)
+		public async Task<UserDataResponse> GetAccountData(int userId)
 		{
 			var user = await _dbcontext.Users.FindAsync(userId);
 			if (user == null)
 				throw new ArgumentException("No such user");
 
-			return user.ToAccountDataResponse();
+			return user.ToUserDataResponse();
+		}
+
+
+		public async Task UpdateUser(EditUserDataRequest userData)
+		{
+			var dbUser = await _dbcontext.Users.FindAsync(userData.Id);
+			if (dbUser != null)
+			{
+				userData.UpdateUser(dbUser); 
+			}
+			_dbcontext.Entry(dbUser).State = EntityState.Modified;
+			await _dbcontext.SaveChangesAsync();
 		}
 
 		private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -174,6 +186,5 @@ namespace SCNURE_BACKEND.Services.Users
 
             return true;
         }
-
 	}
 }

@@ -13,6 +13,7 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 		{
 			return new UserProfileResponse
 			{
+				Login = user.Login,
 				Ban = user.Ban,
 				Birthday = user.ShowBirthday ? user.Birthday : null,
 				Description = user.Description,
@@ -26,10 +27,11 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 			};
 		}
 
-		public static AccountDataResponse ToAccountDataResponse(this User user)
+		public static UserDataResponse ToUserDataResponse(this User user)
 		{
-			return new AccountDataResponse
+			return new UserDataResponse
 			{
+				Id = user.UserId,
 				Ban = user.Ban,
 				Birthday = user.Birthday,
 				Description = user.Description,
@@ -47,6 +49,21 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 				ShowEmail = user.ShowEmail,
 				ShowPhone = user.ShowPhone
 			};
+		}
+
+		public static void UpdateUser(this EditUserDataRequest userData, User user)
+		{
+			user.Birthday = userData.Birthday;
+			user.Description = userData.Description;
+			user.Email = userData.Email;
+			user.FirstName = userData.FirstName;
+			user.Login = userData.Login;
+			user.Phone = userData.Phone;
+			user.Photo = userData.Photo;
+			user.SecondName = userData.SecondName;
+			user.ShowBirthday = userData.ShowBirthday;
+			user.ShowEmail = userData.ShowEmail;
+			user.ShowPhone = userData.ShowPhone;
 		}
 	}
 }
