@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using SCNURE_BACKEND.Data;
 using SCNURE_BACKEND.Helpers;
 using SCNURE_BACKEND.Services.Email;
 using SCNURE_BACKEND.Services.Users;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,7 +27,6 @@ namespace SCNURE_BACKEND
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -41,11 +42,25 @@ namespace SCNURE_BACKEND
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "SCNURE-BACKEND", Version = "v.0.0.1" });
+                c.SwaggerDoc("v1", new Info() { Title = "SCNURE-BACKEND", Version = "v.0.0.1" });
+
+
+				c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+				{
+					Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+					Name = "Authorization",
+					In = "header",
+					Type = "apiKey"
+				});
+				c.AddSecurityRequirement(
+					new Dictionary<string, IEnumerable<string>>
+					{
+						{ "Bearer", new string[] { } },
+					}
+				);
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -54,7 +69,6 @@ namespace SCNURE_BACKEND
             }
             else
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -66,9 +80,9 @@ namespace SCNURE_BACKEND
                 .AllowAnyHeader()
                 .AllowCredentials());
 
-            app.UseMvc();
+			app.UseAuthentication();
 
-            app.UseAuthentication();
+			app.UseMvc();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
