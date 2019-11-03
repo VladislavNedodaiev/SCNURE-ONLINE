@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,17 +75,7 @@ namespace SCNURE_BACKEND.Services.Users
 
 		public async Task ConfirmUserEmailAsync(string token)
 		{
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
-			var validations = new TokenValidationParameters
-			{
-				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = new SymmetricSecurityKey(key),
-				ValidateIssuer = false,
-				ValidateAudience = false
-			};
-			var claims = tokenHandler.ValidateToken(token, validations, out _);
-			var user = await _dbcontext.Users.FindAsync(Convert.ToInt32(claims.Identity.Name));
+            var user = await GetUserByToken(token);
 			if (user != null)
 			{
 				user.Verification = null;
@@ -99,6 +87,22 @@ namespace SCNURE_BACKEND.Services.Users
 				throw new ArgumentException("UserId wasn't found");
 			}
 		}
+
+        public async Task<User> GetUserByToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+            var validations = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+            var claims = tokenHandler.ValidateToken(token, validations, out _);
+            var user = await _dbcontext.Users.FindAsync(Convert.ToInt32(claims.Identity.Name));
+            return user;
+        }
 
 		private async Task<User> CreateUserFromDtoAsync(RegisterDto userDto)
 		{
