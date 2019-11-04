@@ -364,7 +364,7 @@ namespace SCNURE_BACKEND.Data
 
                 entity.Property(e => e.Photo)
                     .HasColumnName("photo")
-                    .HasColumnType("int(11)");
+                    .HasColumnType("varchar(256)");
 
                 entity.Property(e => e.PublicationDate)
                     .HasColumnName("publication_date")
@@ -399,7 +399,7 @@ namespace SCNURE_BACKEND.Data
 
                 entity.Property(e => e.EditAccess)
                     .HasColumnName("edit_access")
-                    .HasColumnType("tinyint(1)")
+                    .HasColumnType("bit")
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Role)

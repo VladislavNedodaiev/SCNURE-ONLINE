@@ -8,7 +8,7 @@ namespace SCNURE_BACKEND.Data.Entities
         public int StartupId { get; set; }
         public int UserId { get; set; }
         public string Role { get; set; }
-        public sbyte EditAccess { get; set; }
+        public bool EditAccess { get; set; }
 
         public virtual Startup Startup { get; set; }
         public virtual User User { get; set; }

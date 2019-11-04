@@ -20,7 +20,7 @@ namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
                 Title = remoteStartup.Title,
                 FoundationYear = remoteStartup.FoundationYear,
                 PublicationDate = remoteStartup.PublicationDate,
-                Photo = "null", //TODO: use actual url
+                Photo = remoteStartup.Photo, //TODO: use actual url
                 Description = remoteStartup.Description,
                 Website = remoteStartup.Website,
                 Phone = remoteStartup.Phone,

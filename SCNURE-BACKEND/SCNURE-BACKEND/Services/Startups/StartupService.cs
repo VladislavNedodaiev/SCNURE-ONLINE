@@ -12,6 +12,8 @@ namespace SCNURE_BACKEND.Services.Users
         Task<Data.Entities.Startup> GetStartupById(int startupId);
         Task<List<Data.Entities.Startup>> GetAllStartups();
         Task<Data.Entities.Startup> AddStartup(string title, string description, Data.Entities.User creator);
+        Task<Data.Entities.Startup> UpdateStartup(Data.Entities.Startup startup);
+        Task<List<Data.Entities.TeamMember>> GetTeamMembers(int startupId);
     }
 
     public class StartupServiceImpl : IStartupService
@@ -47,11 +49,27 @@ namespace SCNURE_BACKEND.Services.Users
                 StartupId = addedStartup.StartupId,
                 UserId = creator.UserId,
                 Role = "",
-                EditAccess = 1
+                EditAccess = true
             };
             _dbcontext.TeamMembers.Add(dbTeamMember);
             _dbcontext.SaveChanges();
             return _dbcontext.Startups.Find(addedStartup.StartupId);
+        }
+
+        public async Task<Data.Entities.Startup> UpdateStartup(Data.Entities.Startup startup)
+        {
+            return _dbcontext.Startups.Update(startup).Entity;
+        }
+
+        public async Task<List<Data.Entities.TeamMember>> GetTeamMembers(int startupId)
+        {
+            return _dbcontext
+                .TeamMembers
+                .AsQueryable()
+                .Where(
+                    teamMember => teamMember.StartupId == startupId
+                )
+                .ToList();
         }
     }
 }
