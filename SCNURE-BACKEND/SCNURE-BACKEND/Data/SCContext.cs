@@ -509,6 +509,11 @@ namespace SCNURE_BACKEND.Data
                 entity.Property(e => e.Verification)
                     .HasColumnName("verification")
                     .HasColumnType("varchar(256)");
+
+				entity.Property(e => e.Gender)
+					.IsRequired(false)
+					.HasColumnName("gender")
+					.HasColumnType("enum");
             });
         }
     }

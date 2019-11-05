@@ -172,7 +172,9 @@ namespace SCNURE_BACKEND.Controllers
 		{
 			try
 			{
-				await userService.UpdateUser(user);
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+				await userService.UpdateUser(user, contextUserId);
 				return Ok();
 			}
 			catch (Exception ex)

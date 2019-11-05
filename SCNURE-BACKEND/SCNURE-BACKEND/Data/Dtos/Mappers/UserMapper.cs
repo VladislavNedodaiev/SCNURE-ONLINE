@@ -47,7 +47,8 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 				Login = user.Login,
 				ShowBirthday = user.ShowBirthday,
 				ShowEmail = user.ShowEmail,
-				ShowPhone = user.ShowPhone
+				ShowPhone = user.ShowPhone,
+				Gender = user.Gender
 			};
 		}
 
@@ -64,6 +65,7 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 			user.ShowBirthday = userData.ShowBirthday;
 			user.ShowEmail = userData.ShowEmail;
 			user.ShowPhone = userData.ShowPhone;
+			user.Gender = userData.Gender;
 		}
 	}
 }

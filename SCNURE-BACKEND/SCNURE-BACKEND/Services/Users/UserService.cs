@@ -151,9 +151,9 @@ namespace SCNURE_BACKEND.Services.Users
 			return user.ToUserDataResponse();
 		}
 
-		public async Task UpdateUser(EditUserDataRequest userData)
+		public async Task UpdateUser(EditUserDataRequest userData, int userId)
 		{
-			var dbUser = await dbcontext.Users.FindAsync(userData.Id);
+			var dbUser = await dbcontext.Users.FindAsync(userId);
 			if (dbUser != null)
 			{
 				userData.UpdateUser(dbUser); 

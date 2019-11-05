@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SCNURE_BACKEND.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace SCNURE_BACKEND.Data.Dtos.Users
 		public string Photo { get; set; }
 		public string Description { get; set; }
 		public string Phone { get; set; }
+		public UserGender? Gender { get; set; }
 		public DateTime? Birthday { get; set; }
 		public DateTime RegisterDate { get; set; }
 		public string Email { get; set; }

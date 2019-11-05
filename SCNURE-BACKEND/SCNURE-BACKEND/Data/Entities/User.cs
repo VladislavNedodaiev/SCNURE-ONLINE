@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SCNURE_BACKEND.Helpers;
 using System;
 using System.Collections.Generic;
 
@@ -23,6 +24,7 @@ namespace SCNURE_BACKEND.Data.Entities
         public byte[] PasswordSalt { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
+		public UserGender? Gender { get; set; }
         public string Photo { get; set; }
         public string Description { get; set; }
         public string Phone { get; set; }

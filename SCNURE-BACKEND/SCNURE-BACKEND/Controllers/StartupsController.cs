@@ -184,7 +184,7 @@ namespace SCNURE_BACKEND.Controllers
 
 		[Authorize]
 		[HttpDelete("remove-team-member")]
-		public async Task<IActionResult> RemoveStartupTeamMember(int userId, int startupId)
+		public async Task<IActionResult> RemoveStartupTeamMember([Required]int userId, [Required]int startupId)
 		{
 			try
 			{
