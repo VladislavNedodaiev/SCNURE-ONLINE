@@ -162,10 +162,9 @@ namespace SCNURE_BACKEND.Services.Users
 			await dbcontext.SaveChangesAsync();
 		}
 
-		public async Task<TeamMember> AddTeamMember(AddTeamMemberRequest addTeamMemberRequest)
+		public async Task AddTeamMember(AddTeamMemberRequest addTeamMemberRequest)
 		{
 			var user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Login == addTeamMemberRequest.Login);
-
 			if (user == null)
 				throw new ArgumentException("User was not found");
 
@@ -179,8 +178,18 @@ namespace SCNURE_BACKEND.Services.Users
 
 			await dbcontext.TeamMembers.AddAsync(teamMember);
 			await dbcontext.SaveChangesAsync();
+		}
 
-			return teamMember;
+		public async Task RemoveTeamMember(int userId, int startupId)
+		{
+			var user = await dbcontext.Users.SingleOrDefaultAsync(u => u.UserId == userId);
+			if (user == null)
+				throw new ArgumentException("User was not found");
+
+			var teamMember = await dbcontext.TeamMembers.FindAsync(startupId, userId);
+
+			dbcontext.TeamMembers.Remove(teamMember);
+			await dbcontext.SaveChangesAsync();
 		}
 
 		public async Task<bool> HasEditAccess(int userId, int startupId)

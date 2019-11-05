@@ -62,29 +62,6 @@ namespace SCNURE_BACKEND.Controllers
             }
         }
 
-		[Authorize]
-		[HttpPost("add-team-members")]
-		public async Task<IActionResult> AddStartupTeamMembers([Required]AddTeamMemberRequest addTeamMemberRequest)
-		{
-			try
-			{
-				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
-				if (contextUserId == 0)
-					return BadRequest(new { message = "Unathorized" });
-
-				var user = await userService.GetByIdAsync(contextUserId);
-				if (!await userService.HasEditAccess(user.UserId, addTeamMemberRequest.StartupId))
-					return BadRequest(new { message = "Current user can't add team members" });
-
-				await userService.AddTeamMember(addTeamMemberRequest);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(new { message = ex.Message });
-			}
-		}
-
         [AllowAnonymous]
         [HttpGet("all-startups")]
         public async Task<IActionResult> GetAllStartupsAsync()
@@ -101,7 +78,28 @@ namespace SCNURE_BACKEND.Controllers
             }
         }
 
-        [Authorize]
+		[Authorize]
+		[HttpPost("add-team-member")]
+		public async Task<IActionResult> AddStartupTeamMembers(AddTeamMemberRequest addTeamMemberRequest)
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+				var user = await userService.GetByIdAsync(contextUserId);
+				if (!await userService.HasEditAccess(user.UserId, addTeamMemberRequest.StartupId))
+					return BadRequest(new { message = "Current user can't add team members" });
+
+				await userService.AddTeamMember(addTeamMemberRequest);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[Authorize]
         [HttpPost("create-startup")]
         public async Task<IActionResult> CreateStartup([Required]CreateStartupDto requestBody)
         {
@@ -183,5 +181,26 @@ namespace SCNURE_BACKEND.Controllers
                 return BadRequest(exception.Message);
             }
         }
-    }
+
+		[Authorize]
+		[HttpDelete("remove-team-member")]
+		public async Task<IActionResult> RemoveStartupTeamMember(int userId, int startupId)
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+				var user = await userService.GetByIdAsync(contextUserId);
+				if (!await userService.HasEditAccess(user.UserId, startupId))
+					return BadRequest(new { message = "Current user can't add team members" });
+
+				await userService.RemoveTeamMember(userId, startupId);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+	}
 }

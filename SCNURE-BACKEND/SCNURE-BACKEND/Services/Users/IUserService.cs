@@ -16,7 +16,8 @@ namespace SCNURE_BACKEND.Services.Users
 		Task<UserProfileResponse> GetUserProfile(int userId);
 		Task<UserDataResponse> GetAccountData(int userId);
 		Task UpdateUser(EditUserDataRequest user);
-		Task<TeamMember> AddTeamMember(AddTeamMemberRequest addTeamMemberRequest);
+		Task AddTeamMember(AddTeamMemberRequest addTeamMemberRequest);
+		Task RemoveTeamMember(int userId, int startupId);
 		Task<bool> HasEditAccess(int userId, int startupId);
     }
 }
