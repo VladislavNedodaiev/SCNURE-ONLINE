@@ -9,6 +9,8 @@ namespace SCNURE_BACKEND.Data.Dtos
 	public class RegisterRequest
 	{
 		[Required]
+		[MaxLength(24, ErrorMessage = "Login must be more than 4 symbols"), MinLength(4, ErrorMessage = "Login must be less than 24 symbols")]
+		[RegularExpression(@"(?!^\d+$)^[A-Za-z\d]+$", ErrorMessage = "Login should consists of latin and digits symbols, but can't contain only digits")]
 		public string Login { get; set; }
 		[Required]
 		public string Password { get; set; }
