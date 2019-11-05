@@ -121,12 +121,24 @@ namespace SCNURE_BACKEND.Controllers
 
 		[AllowAnonymous]
 		[HttpGet("profile")]
-		public async Task<IActionResult> GetUserProfile([Required]int userId)
+		public async Task<IActionResult> GetUserProfile(int? userId, string login)
 		{
 			try
 			{
-				var user = await userService.GetUserProfile(userId);
-				return Ok(user);
+				if (userId.HasValue && !string.IsNullOrEmpty(login))
+					return BadRequest(new { message = "Provide only login or only userId" });
+				else if (userId.HasValue)
+				{
+					var user = await userService.GetUserProfile(userId.Value);
+					return Ok(user);
+				}
+				else if (!string.IsNullOrEmpty(login))
+				{
+					var user = await userService.GetUserProfile(login);
+					return Ok(user);
+				}
+				else
+					return BadRequest(new { message = "No parameters" });
 			}
 			catch (ArgumentException ex)
 			{

@@ -14,6 +14,7 @@ namespace SCNURE_BACKEND.Services.Users
 		Task ConfirmUserEmailAsync(string token);
         Task<User> GetUserByToken(string token);
 		Task<UserProfileResponse> GetUserProfile(int userId);
+		Task<UserProfileResponse> GetUserProfile(string login);
 		Task<UserDataResponse> GetAccountData(int userId);
 		Task UpdateUser(EditUserDataRequest user, int userId);
 		Task AddTeamMember(AddTeamMemberRequest addTeamMemberRequest);

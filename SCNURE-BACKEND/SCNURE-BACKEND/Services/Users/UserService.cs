@@ -142,6 +142,16 @@ namespace SCNURE_BACKEND.Services.Users
 			return user.ToUserProfileResponse();
 		}
 
+
+		public async Task<UserProfileResponse> GetUserProfile(string login)
+		{
+			var user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Login == login);
+			if (user == null)
+				throw new ArgumentException("No such user");
+
+			return user.ToUserProfileResponse();
+		}
+
 		public async Task<UserDataResponse> GetAccountData(int userId)
 		{
 			var user = await dbcontext.Users.FindAsync(userId);
