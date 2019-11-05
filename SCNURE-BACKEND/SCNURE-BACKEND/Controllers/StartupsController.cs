@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SCNURE_BACKEND.Data.Dtos;
+using SCNURE_BACKEND.Data.Dtos.TeamMembers;
 using SCNURE_BACKEND.Data.Entities.ClientEntities.Startup;
 using SCNURE_BACKEND.Helpers;
 using SCNURE_BACKEND.Services.Users;
@@ -60,6 +61,29 @@ namespace SCNURE_BACKEND.Controllers
                 return BadRequest(exception.Message);
             }
         }
+
+		[Authorize]
+		[HttpPost("add-team-members")]
+		public async Task<IActionResult> AddStartupTeamMembers([Required]AddTeamMemberRequest addTeamMemberRequest)
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+				if (contextUserId == 0)
+					return BadRequest(new { message = "Unathorized" });
+
+				var user = await userService.GetByIdAsync(contextUserId);
+				if (!await userService.HasEditAccess(user.UserId, addTeamMemberRequest.StartupId))
+					return BadRequest(new { message = "Current user can't add team members" });
+
+				await userService.AddTeamMember(addTeamMemberRequest);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
 
         [AllowAnonymous]
         [HttpGet("all-startups")]

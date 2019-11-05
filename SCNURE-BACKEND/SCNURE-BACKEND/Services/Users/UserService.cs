@@ -12,18 +12,20 @@ using SCNURE_BACKEND.Helpers;
 using Microsoft.EntityFrameworkCore;
 using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Users;
+using SCNURE_BACKEND.Data.Dtos.TeamMembers;
+using System.Linq;
 
 namespace SCNURE_BACKEND.Services.Users
 {
     public class UserService : IUserService
     {
-        private readonly SCContext _dbcontext;
-		private readonly JwtSettings _jwtSettings;
+        private readonly SCContext dbcontext;
+		private readonly JwtSettings jwtSettings;
 
 		public UserService(SCContext sCContext, IOptions<JwtSettings> jwtSettings)
         {
-            _dbcontext = sCContext;
-			_jwtSettings = jwtSettings.Value;
+            dbcontext = sCContext;
+			this.jwtSettings = jwtSettings.Value;
 		}
 
         public async Task<User> AuthenticateAsync(string loginOrEmail, string password)
@@ -31,7 +33,7 @@ namespace SCNURE_BACKEND.Services.Users
             if (string.IsNullOrEmpty(loginOrEmail) || string.IsNullOrEmpty(password))
                 return null;
 
-			var user = await _dbcontext.Users.SingleOrDefaultAsync(u => u.Login == loginOrEmail || u.Email == loginOrEmail);
+			var user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Login == loginOrEmail || u.Email == loginOrEmail);
             if (user == null)
                 return null;
 
@@ -43,7 +45,7 @@ namespace SCNURE_BACKEND.Services.Users
 
         public async Task<User> GetByIdAsync(int id)
         {
-            return await _dbcontext.Users.FindAsync(id);
+            return await dbcontext.Users.FindAsync(id);
         }
 
 		public async Task<User> RegisterAsync(RegisterRequest userDto)
@@ -52,7 +54,7 @@ namespace SCNURE_BACKEND.Services.Users
 			if (user != null)
 			{
 				var tokenHandler = new JwtSecurityTokenHandler();
-				var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+				var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
 				var tokenDescriptor = new SecurityTokenDescriptor
 				{
 					Subject = new ClaimsIdentity(new Claim[]
@@ -67,8 +69,8 @@ namespace SCNURE_BACKEND.Services.Users
 
 				user.Verification = emailTokenString;
 
-				_dbcontext.Users.Update(user);
-				await _dbcontext.SaveChangesAsync();
+				dbcontext.Users.Update(user);
+				await dbcontext.SaveChangesAsync();
 
 				return user;
 			}
@@ -81,8 +83,8 @@ namespace SCNURE_BACKEND.Services.Users
 			if (user != null)
 			{
 				user.Verification = null;
-				_dbcontext.Users.Update(user);
-				await _dbcontext.SaveChangesAsync();
+				dbcontext.Users.Update(user);
+				await dbcontext.SaveChangesAsync();
 			}
 			else
 			{
@@ -93,7 +95,7 @@ namespace SCNURE_BACKEND.Services.Users
         public async Task<User> GetUserByToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
             var validations = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -102,13 +104,13 @@ namespace SCNURE_BACKEND.Services.Users
                 ValidateAudience = false
             };
             var claims = tokenHandler.ValidateToken(token, validations, out _);
-            var user = await _dbcontext.Users.FindAsync(Convert.ToInt32(claims.Identity.Name));
+            var user = await dbcontext.Users.FindAsync(Convert.ToInt32(claims.Identity.Name));
             return user;
         }
 
 		private async Task<User> CreateUserFromDtoAsync(RegisterRequest userDto)
 		{
-			if (await _dbcontext.Users.AnyAsync(u => u.Login == userDto.Login))
+			if (await dbcontext.Users.AnyAsync(u => u.Login == userDto.Login))
 				throw new ArgumentException("Username \"" + userDto.Login + "\" is already taken");
 
 			if (userDto.Password != userDto.PasswordConfirmation)
@@ -125,15 +127,15 @@ namespace SCNURE_BACKEND.Services.Users
 				Email = userDto.Email
 			};
 
-			await _dbcontext.Users.AddAsync(user);
-			await _dbcontext.SaveChangesAsync();
+			await dbcontext.Users.AddAsync(user);
+			await dbcontext.SaveChangesAsync();
 
 			return user;
 		}
 
 		public async Task<UserProfileResponse> GetUserProfile(int userId)
 		{
-			var user = await _dbcontext.Users.FindAsync(userId);
+			var user = await dbcontext.Users.FindAsync(userId);
 			if (user == null)
 				throw new ArgumentException("No such user");
 
@@ -142,24 +144,54 @@ namespace SCNURE_BACKEND.Services.Users
 
 		public async Task<UserDataResponse> GetAccountData(int userId)
 		{
-			var user = await _dbcontext.Users.FindAsync(userId);
+			var user = await dbcontext.Users.FindAsync(userId);
 			if (user == null)
 				throw new ArgumentException("No such user");
 
 			return user.ToUserDataResponse();
 		}
 
-
 		public async Task UpdateUser(EditUserDataRequest userData)
 		{
-			var dbUser = await _dbcontext.Users.FindAsync(userData.Id);
+			var dbUser = await dbcontext.Users.FindAsync(userData.Id);
 			if (dbUser != null)
 			{
 				userData.UpdateUser(dbUser); 
 			}
-			_dbcontext.Entry(dbUser).State = EntityState.Modified;
-			await _dbcontext.SaveChangesAsync();
+			dbcontext.Entry(dbUser).State = EntityState.Modified;
+			await dbcontext.SaveChangesAsync();
 		}
+
+		public async Task<TeamMember> AddTeamMember(AddTeamMemberRequest addTeamMemberRequest)
+		{
+			var user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Login == addTeamMemberRequest.Login);
+
+			if (user == null)
+				throw new ArgumentException("User was not found");
+
+			var teamMember = new TeamMember
+			{
+				EditAccess = addTeamMemberRequest.HasEditAccess,
+				Role = addTeamMemberRequest.Role,
+				StartupId = addTeamMemberRequest.StartupId,
+				UserId = user.UserId
+			};
+
+			await dbcontext.TeamMembers.AddAsync(teamMember);
+			await dbcontext.SaveChangesAsync();
+
+			return teamMember;
+		}
+
+		public async Task<bool> HasEditAccess(int userId, int startupId)
+		{
+			var user = await dbcontext.TeamMembers.Where(tm => tm.StartupId == startupId).SingleOrDefaultAsync(tm => tm.UserId == userId);
+			if (user == null)
+				return false;
+			return user.EditAccess;
+		}
+
+		#region Private Methods
 
 		private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -189,6 +221,8 @@ namespace SCNURE_BACKEND.Services.Users
             }
 
             return true;
-        }
+		}
+
+		#endregion
 	}
 }

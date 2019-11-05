@@ -26,23 +26,23 @@ namespace SCNURE_BACKEND.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IUserService _userService;
-        private readonly JwtSettings _jwtSettings;
-		private readonly IEmailService _emailService;
+        private readonly IUserService userService;
+        private readonly JwtSettings jwtSettings;
+		private readonly IEmailService emailService;
 
         public AccountsController(IUserService userService, IOptions<JwtSettings> jwtSettings,
 			IEmailService emailService)
         {
-            _userService = userService;
-            _jwtSettings = jwtSettings.Value;
-			_emailService = emailService;
+            this.userService = userService;
+            this.jwtSettings = jwtSettings.Value;
+			this.emailService = emailService;
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody]LoginRequest userDto)
         {
-            var user = await _userService.AuthenticateAsync(userDto.LoginOrEmail, userDto.Password);
+            var user = await userService.AuthenticateAsync(userDto.LoginOrEmail, userDto.Password);
 
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -51,7 +51,7 @@ namespace SCNURE_BACKEND.Controllers
 				return BadRequest(new { message = "User is banned" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -79,7 +79,7 @@ namespace SCNURE_BACKEND.Controllers
         {
             try
             {
-                var user = await _userService.RegisterAsync(userDto);
+                var user = await userService.RegisterAsync(userDto);
 				if (user != null)
 				{
 					var callbackUrl = Url.Action(
@@ -87,7 +87,7 @@ namespace SCNURE_BACKEND.Controllers
 						"accounts",
 						new { token = user.Verification},
 						protocol: HttpContext.Request.Scheme);
-					await _emailService.SendEmailAsync(user.Email, "Confirm your account",
+					await emailService.SendEmailAsync(user.Email, "Confirm your account",
 						$"<h3>Thanks for signing up to YEP! Startup Club</h3>" +
 							$"<p>Please confirm your email address to complete your SCNURE registration.</p>" +
 							$"<a href='{callbackUrl}'>Confirm your email</a>");
@@ -110,7 +110,7 @@ namespace SCNURE_BACKEND.Controllers
 		{
 			try
 			{
-				await _userService.ConfirmUserEmailAsync(token);
+				await userService.ConfirmUserEmailAsync(token);
 				return Ok();
 			}
 			catch (ArgumentException ex)
@@ -125,7 +125,7 @@ namespace SCNURE_BACKEND.Controllers
 		{
 			try
 			{
-				var user = await _userService.GetUserProfile(userId);
+				var user = await userService.GetUserProfile(userId);
 				return Ok(user);
 			}
 			catch (ArgumentException ex)
@@ -143,11 +143,11 @@ namespace SCNURE_BACKEND.Controllers
 				if (contextUserId == 0)
 					return BadRequest(new { message = "Unathorized" });
 
-				var contextUser = await _userService.GetByIdAsync(contextUserId);
+				var contextUser = await userService.GetByIdAsync(contextUserId);
 
 				if (userId.HasValue && contextUserId != userId && contextUser.Admin)
 				{
-					var user = await _userService.GetAccountData(userId.Value);
+					var user = await userService.GetAccountData(userId.Value);
 					return Ok(user);
 				}
 				else if (userId.HasValue && contextUserId != userId && !contextUser.Admin)
@@ -156,7 +156,7 @@ namespace SCNURE_BACKEND.Controllers
 				}
 				else
 				{
-					var user = await _userService.GetAccountData(contextUserId);
+					var user = await userService.GetAccountData(contextUserId);
 					return Ok(user);
 				}
 			}
@@ -172,7 +172,7 @@ namespace SCNURE_BACKEND.Controllers
 		{
 			try
 			{
-				await _userService.UpdateUser(user);
+				await userService.UpdateUser(user);
 				return Ok();
 			}
 			catch (Exception ex)
