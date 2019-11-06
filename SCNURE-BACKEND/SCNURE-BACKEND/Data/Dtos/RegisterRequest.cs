@@ -13,6 +13,7 @@ namespace SCNURE_BACKEND.Data.Dtos
 		[RegularExpression(@"(?!^\d+$)^[A-Za-z\d]+$", ErrorMessage = "Login should consists of latin and digits symbols, but can't contain only digits")]
 		public string Login { get; set; }
 		[Required]
+		[Compare(nameof(PasswordConfirmation), ErrorMessage = "Passwords don't match")]
 		public string Password { get; set; }
 		[Required]
 		public string PasswordConfirmation { get; set; }

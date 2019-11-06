@@ -113,8 +113,8 @@ namespace SCNURE_BACKEND.Services.Users
 			if (await dbcontext.Users.AnyAsync(u => u.Login == userDto.Login))
 				throw new ArgumentException("Username \"" + userDto.Login + "\" is already taken");
 
-			if (userDto.Password != userDto.PasswordConfirmation)
-				throw new ArgumentException("Password and passwordConfirmation don't match");
+			//if (userDto.Password != userDto.PasswordConfirmation)
+			//	throw new ArgumentException("Password and passwordConfirmation don't match");
 
 			byte[] passwordHash, passwordSalt;
 			CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
@@ -141,7 +141,6 @@ namespace SCNURE_BACKEND.Services.Users
 
 			return user.ToUserProfileResponse();
 		}
-
 
 		public async Task<UserProfileResponse> GetUserProfile(string login)
 		{
