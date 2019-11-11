@@ -23,12 +23,12 @@ function showProfile(data) {
 
 	document.getElementById('username').href = usrid;
 	document.getElementById('username').innerHTML = data.login;	
-	
-	if (data.secondName)
-		document.getElementById('secondName').value = data.secondName;
 		
 	if (data.firstName)
 		document.getElementById('firstName').value = data.firstName;
+		
+	if (data.secondName)
+		document.getElementById('secondName').value = data.secondName;
 		
 	if (data.gender == 'Male')
 		document.getElementById('gender').value = 1;
@@ -56,7 +56,7 @@ function handleResponse(response) {
 		if (!response.ok) {
 			const error = (data && data.message) || response.statusText;
 
-			window.location.href = "startups.html?error="+encodeURI("Такого користувача не існує!");
+			window.location.href = "startups.html?error="+encodeURI("Сталася помилка!");
 			
 			return Promise.reject(error);
 		}
@@ -86,4 +86,32 @@ function readURL(input) {
 function removeUpload(){
 	$('.file-upload-input').replaceWith($('.file-upload-input').clone());
 	$('.image-upload-wrap').hide();
+}
+
+function saveProfile(event) {
+	event.preventDefault();
+
+	//if(title && description) { // add some validation
+		const requestOptions = {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify( { login: document.getElementById('username').innerHTML, 
+									firstName: document.getElementById('firstName').value, 
+									secondName: document.getElementById('secondName').value, 
+									gender: document.getElementById('gender').value,
+									photo: "null",
+									description: document.getElementById('description').value,
+									phone: document.getElementById('phone').value,
+									showPhone: "true",
+									birthday: document.getElementById('birthday').value,
+									showBirthday: "true",
+									email: document.getElementById('email').value,
+									showEmail: "true"
+								})
+		};
+
+	fetch(env.apiUrl + '/api/Accounts', requestOptions)
+		.then(handleResponse)
+		.then(data => alert(JSON.stringify(data)));
+	//}
 }

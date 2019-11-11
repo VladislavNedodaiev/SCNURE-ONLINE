@@ -41,24 +41,24 @@
 		</header>
 		
 		<div class="content">
-			<h2 class="text-center">РЕДАГУВАННЯ ПРОФІЛЮ <a id="username"></a></h4>
-			<form method="POST" onsubmit="saveStartup(event)">
+			<h2 class="text-center">РЕДАГУВАННЯ ПРОФІЛЮ <a id="username"></a></h2>
+			<form method="PUT" onsubmit="saveProfile(event)">
 
 				<div class="group">      
-					<input id="firstName" type="text" required>
-					<span class="highlight"></span>
-					<span class="bar"></span>
-					<label>Введіть ваше прізвище</label>
-				</div>
-				<div class="group">      
-					<input id="secondName" type="text" required>
+					<input id="firstName" type="text">
 					<span class="highlight"></span>
 					<span class="bar"></span>
 					<label>Введіть ваше ім'я</label>
 				</div>
+				<div class="group">      
+					<input id="secondName" type="text">
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<label>Введіть ваше прізвище</label>
+				</div>
 				
 				<div class="group">Гендер
-				<select id="gender" class="browser-default form-control custom-select custom-select mt-2">
+				<select id="gender" class="browser-default form-control custom-select custom-select mt-2" required>
 					<option value="0">Не визначений</option>
 					<option value="1">Чоловічий</option>
 					<option value="2">Жіночий</option>
@@ -66,25 +66,25 @@
 				</div>
 				
 				<div class="group">Дата Народження    
-					<input id="secondName" type="date" required>
+					<input id="birthday" type="date">
 					<span class="highlight"></span>
 					<span class="bar"></span>
 				</div>
 				
 				<div class="file-upload">
 					<button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Завантажити зображення</button>
-					<input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+					<input class="file-upload-input" id='photo' type='file' onchange="readURL(this);" accept="image/*">
 					<div class="image-upload-wrap" style="display:none">
 						<div class="image-title-wrap">
 							<span class="image-title">Завантажене зображення</span>
 							<button type="button" onclick="removeUpload()" class="remove-image">X</button>
 						</div>
-						<img class="file-upload-image" src="#" alt="your image"/>
+						<img class="file-upload-image" src="#" alt="your image">
 					</div>
 				</div>
 					
 				<div class="group">      
-					<textarea id="description" class="txta" name="comment" required></textarea>
+					<textarea id="description" class="txta" name="comment"></textarea>
 					<span class="highlight"></span>
 					<span class="bar"></span>
 					<label>Ваша автобіографія</label>
@@ -102,7 +102,7 @@
 				
 				<h5 class="far fa-envelope contact-icon"></h5>
 				<div class="group contact">      
-					<input id="email" type="text">
+					<input id="email" type="text" required>
 					<span class="highlight"></span>
 					<span class="bar"></span>
 					<label>Електронна пошта</label>
