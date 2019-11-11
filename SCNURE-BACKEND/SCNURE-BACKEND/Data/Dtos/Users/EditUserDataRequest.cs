@@ -33,6 +33,5 @@ namespace SCNURE_BACKEND.Data.Dtos.Users
 		public string Email { get; set; }
 		[Required]
 		public bool ShowEmail { get; set; }
-		[Required]
 	}
 }
