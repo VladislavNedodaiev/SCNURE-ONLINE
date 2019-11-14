@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SCNURE_BACKEND.Data.Dtos;
+using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.TeamMembers;
 using SCNURE_BACKEND.Data.Entities.ClientEntities.Startup;
 using SCNURE_BACKEND.Helpers;
@@ -18,6 +19,7 @@ namespace SCNURE_BACKEND.Controllers
     [ApiController]
     public class StartupsController : ControllerBase
     {
+        private readonly RemoteTeamMemberMapper remoteTeamMemberMapper = new RemoteTeamMemberMapper();
         private readonly RemoteStartupMapper remoteStartupMapper = new RemoteStartupMapper(); 
         private readonly IStartupService startupService;
         private readonly IUserService userService;
@@ -52,9 +54,9 @@ namespace SCNURE_BACKEND.Controllers
         {
             try
             {
-                //TODO: map response
-                var teamMembers = await startupService.GetTeamMembers(startupId);
-                return Ok(teamMembers);
+                var remoteTeamMembers = await startupService.GetTeamMembers(startupId);
+                var mappedTeamMembers = remoteTeamMemberMapper.MapRemoteTeamMembers(remoteTeamMembers);
+                return Ok(mappedTeamMembers);
             }
             catch (Exception exception)
             {
@@ -202,5 +204,26 @@ namespace SCNURE_BACKEND.Controllers
 				return BadRequest(new { message = ex.Message });
 			}
 		}
-	}
+
+        [Authorize]
+        [HttpPost("edit-team-member")]
+        public async Task<IActionResult> RemoveStartupTeamMember([Required]EditTeamMemberRequest requestBody)
+        {
+            try
+            {
+                int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+                var user = await userService.GetByIdAsync(contextUserId);
+                if (!await userService.HasEditAccess(user.UserId, requestBody.StartupId))
+                    return BadRequest(new { message = "NO_EDIT_ACCESS" });
+
+                await userService.EditTeamMember(requestBody);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+    }
 }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
+namespace SCNURE_BACKEND.Data.Dtos
 {
-    public class ClientStartup
+    public class StartupResponseDto
     {
-        public ClientStartup()
+        public StartupResponseDto()
         {
         }
 
