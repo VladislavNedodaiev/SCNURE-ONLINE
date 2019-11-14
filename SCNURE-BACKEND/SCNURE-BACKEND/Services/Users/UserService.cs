@@ -113,6 +113,9 @@ namespace SCNURE_BACKEND.Services.Users
 			if (await dbcontext.Users.AnyAsync(u => u.Login == userDto.Login))
 				throw new ArgumentException("Username \"" + userDto.Login + "\" is already taken");
 
+			if (await dbcontext.Users.AnyAsync(u => u.Email == userDto.Email))
+				throw new ArgumentException("Email \"" + userDto.Email + "\" is already taken");
+
 			//if (userDto.Password != userDto.PasswordConfirmation)
 			//	throw new ArgumentException("Password and passwordConfirmation don't match");
 
