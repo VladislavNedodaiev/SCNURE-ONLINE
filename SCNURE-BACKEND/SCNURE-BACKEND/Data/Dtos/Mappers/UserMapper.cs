@@ -13,6 +13,7 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 		{
 			return new UserProfileResponse
 			{
+				Id = user.UserId,
 				Login = user.Login,
 				Ban = user.Ban,
 				Birthday = user.ShowBirthday ? user.Birthday : null,
@@ -23,7 +24,8 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 				Membership = user.Membership,
 				Phone = user.ShowPhone ? user.Phone : null,
 				Photo = user.Photo,
-				RegisterDate = user.RegisterDate
+				RegisterDate = user.RegisterDate,
+				Gender = user.Gender
 			};
 		}
 
