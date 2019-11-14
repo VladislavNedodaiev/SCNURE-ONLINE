@@ -40,6 +40,8 @@
 			</nav>
 		</header>
 		
+		<div id='alert'></div>
+		
 		<div class="content">
 			<h2 class="text-center">РЕДАГУВАННЯ ПРОФІЛЮ <a id="username"></a></h2>
 			<form method="PUT" onsubmit="saveProfile(event)">
@@ -94,7 +96,7 @@
 				
 				<h5 class="fas fa-phone contact-icon"></h5>
 				<div class="group contact">      
-					<input id="phone" type="text" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+					<input id="phone" type="text">
 					<span class="highlight"></span>
 					<span class="bar"></span>
 					<label>Телефон</label>

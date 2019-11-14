@@ -39,7 +39,7 @@ function showProfile(data) {
 		document.getElementById('description').value = data.description;
 		
 	if (data.birthday)
-		document.getElementById('birthday').value = data.birthday;
+		document.getElementById('birthday').value = data.birthday.substr(0, 10);
 	
 	if (data.phone)
 		document.getElementById('phone').value = data.phone;
@@ -91,27 +91,78 @@ function removeUpload(){
 function saveProfile(event) {
 	event.preventDefault();
 
-	//if(title && description) { // add some validation
-		const requestOptions = {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify( { login: document.getElementById('username').innerHTML, 
-									firstName: document.getElementById('firstName').value, 
-									secondName: document.getElementById('secondName').value, 
-									gender: document.getElementById('gender').value,
-									photo: "null",
-									description: document.getElementById('description').value,
-									phone: document.getElementById('phone').value,
-									showPhone: "true",
-									birthday: document.getElementById('birthday').value,
-									showBirthday: "true",
-									email: document.getElementById('email').value,
-									showEmail: "true"
-								})
-		};
+	if (document.getElementById('firstName').value.length > 32) {
+	
+		message('Перевищено обсяг тексту для імені! Максимальний обсяг - 32 символів.', 0);
+		return;
+	
+	}
+	
+	if (document.getElementById('secondName').value.length > 32) {
+	
+		message('Перевищено обсяг тексту для прізвища! Максимальний обсяг - 32 символів.', 0);
+		return;
+	
+	}
+	
+	if (document.getElementById('description').value.length > 500) {
+	
+		message('Перевищено обсяг тексту для біографії! Максимальний обсяг - 500 символів.', 0);
+		return;
+	
+	}
+	
+	if (document.getElementById('phone').value.length > 13) {
+	
+		message('Перевищено обсяг тексту для номеру телефону! Максимальний обсяг - 13 символів.', 0);
+		return;
+	
+	}
+	
+	if (document.getElementById('email').value.length > 32) {
+	
+		message('Перевищено обсяг тексту для електронної пошти! Максимальний обсяг - 32 символів.', 0);
+		return;
+	
+	}
+	
+	if (document.getElementById('gender').value < 0 && document.getElementById('gender').value > 2) {
+	
+		message('Такий гендер є недопустимим! Оберіть один з запропонованих.', 0);
+		return;
+	
+	}
+
+	const requestOptions = {
+		method: 'PUT',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify( { login: document.getElementById('username').innerHTML, 
+								firstName: document.getElementById('firstName').value, 
+								secondName: document.getElementById('secondName').value, 
+								gender: document.getElementById('gender').value,
+								photo: "null",
+								description: document.getElementById('description').value,
+								phone: document.getElementById('phone').value,
+								showPhone: "true",
+								birthday: document.getElementById('birthday').value,
+								showBirthday: "true",
+								email: document.getElementById('email').value,
+								showEmail: "true"
+							})
+	};
 
 	fetch(env.apiUrl + '/api/Accounts', requestOptions)
 		.then(handleResponse)
 		.then(data => alert(JSON.stringify(data)));
-	//}
+}
+
+function message(text, type) {
+
+	if (!type)
+		document.getElementById('alert').innerHTML='<div class="alert alert-danger text-center" role="alert" id="alert-text"></div>';
+	else
+		document.getElementById('alert').innerHTML='<div class="alert alert-success text-center" role="alert" id="alert-text"></div>';
+	
+	document.getElementById('alert-text').innerHTML=text;
+
 }
