@@ -223,7 +223,7 @@ namespace SCNURE_BACKEND.Services.Users
             };
 
              dbcontext.TeamMembers.Update(teamMember);
-             dbcontext.SaveChanges();
+             await dbcontext.SaveChangesAsync();
         }
 
         #region Private Methods

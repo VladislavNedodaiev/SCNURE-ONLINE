@@ -13,7 +13,7 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 		{
 			return new UserProfileResponse
 			{
-				Id = user.UserId,
+				UserId = user.UserId,
 				Login = user.Login,
 				Ban = user.Ban,
 				Birthday = user.ShowBirthday ? user.Birthday : null,
