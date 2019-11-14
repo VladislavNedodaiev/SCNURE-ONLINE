@@ -209,9 +209,23 @@ namespace SCNURE_BACKEND.Services.Users
 			return user.EditAccess;
 		}
 
-		#region Private Methods
+        public async Task EditTeamMember(EditTeamMemberRequest editTeamMemberRequest)
+        {
+            var teamMember = new TeamMember
+            {
+                EditAccess = editTeamMemberRequest.HasEditAccess,
+                Role = editTeamMemberRequest.Role,
+                StartupId = editTeamMemberRequest.StartupId,
+                UserId = editTeamMemberRequest.UserId
+            };
 
-		private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+             dbcontext.TeamMembers.Update(teamMember);
+             dbcontext.SaveChanges();
+        }
+
+        #region Private Methods
+
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");

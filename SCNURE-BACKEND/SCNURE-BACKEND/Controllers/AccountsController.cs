@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SCNURE_BACKEND.Data;
 using SCNURE_BACKEND.Data.Dtos;
+using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Users;
 using SCNURE_BACKEND.Data.Entities;
 using SCNURE_BACKEND.Helpers;
@@ -194,5 +195,21 @@ namespace SCNURE_BACKEND.Controllers
 				return BadRequest(new { message = ex.Message });
 			}
 		}
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetOwnProfile()
+        {
+            try
+            {
+                int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+                var user = await userService.GetByIdAsync(contextUserId);
+                return Ok(user.ToUserDataResponse());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

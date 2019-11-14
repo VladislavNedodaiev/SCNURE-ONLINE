@@ -58,7 +58,9 @@ namespace SCNURE_BACKEND.Services.Users
 
         public async Task<Data.Entities.Startup> UpdateStartup(Data.Entities.Startup startup)
         {
-            return _dbcontext.Startups.Update(startup).Entity;
+            var result = _dbcontext.Startups.Update(startup).Entity;
+            _dbcontext.SaveChanges();
+            return result;
         }
 
         public async Task<List<Data.Entities.TeamMember>> GetTeamMembers(int startupId)
