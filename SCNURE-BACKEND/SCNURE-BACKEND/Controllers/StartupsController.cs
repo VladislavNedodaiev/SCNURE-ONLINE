@@ -212,12 +212,10 @@ namespace SCNURE_BACKEND.Controllers
             try
             {
                 int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+                var contextUser = await userService.GetByIdAsync(contextUserId);
 
-                var user = await userService.GetByIdAsync(contextUserId);
-                if (!await userService.HasEditAccess(user.UserId, requestBody.StartupId))
-                    return BadRequest(new { message = "NO_EDIT_ACCESS" });
+                startupService.EditTeamMember(requestBody, contextUser);
 
-                await userService.EditTeamMember(requestBody);
                 return Ok();
             }
             catch (Exception ex)

@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using SCNURE_BACKEND.Data;
+using SCNURE_BACKEND.Data.Dtos.TeamMembers;
+using SCNURE_BACKEND.Data.Entities;
 using SCNURE_BACKEND.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,9 +14,10 @@ namespace SCNURE_BACKEND.Services.Users
     {
         Task<Data.Entities.Startup> GetStartupById(int startupId);
         Task<List<Data.Entities.Startup>> GetAllStartups();
-        Task<Data.Entities.Startup> AddStartup(string title, string description, Data.Entities.User creator);
+        Task<Data.Entities.Startup> AddStartup(string title, string description, User creator);
         Task<Data.Entities.Startup> UpdateStartup(Data.Entities.Startup startup);
         Task<List<Data.Entities.TeamMember>> GetTeamMembers(int startupId);
+        Task EditTeamMember(EditTeamMemberRequest editTeamMemberRequest, User editor);
     }
 
     public class StartupServiceImpl : IStartupService
@@ -72,6 +76,25 @@ namespace SCNURE_BACKEND.Services.Users
                     teamMember => teamMember.StartupId == startupId
                 )
                 .ToList();
+        }
+
+        public async Task EditTeamMember(EditTeamMemberRequest editTeamMemberRequest, User editor)
+        {
+            var teamMembers = await GetTeamMembers(editTeamMemberRequest.StartupId);
+            var editorAsTeamMember = teamMembers.FirstOrDefault(x => x.UserId == editor.UserId);
+
+            if (!editorAsTeamMember.EditAccess && !editor.Admin)
+                throw new ArgumentException("NO_EDIT_ACCESS");
+
+            var userAsTeamMember = editorAsTeamMember;
+            if (editor.UserId != editTeamMemberRequest.UserId)
+            {
+                userAsTeamMember = teamMembers.FirstOrDefault(x => x.UserId == editTeamMemberRequest.UserId);
+            }
+
+            userAsTeamMember.Role = editTeamMemberRequest.Role;
+            userAsTeamMember.EditAccess = editTeamMemberRequest.HasEditAccess;
+            _dbcontext.SaveChanges();
         }
     }
 }

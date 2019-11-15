@@ -209,20 +209,6 @@ namespace SCNURE_BACKEND.Services.Users
 			return user.EditAccess;
 		}
 
-        public async Task EditTeamMember(EditTeamMemberRequest editTeamMemberRequest)
-        {
-            var teamMember = new TeamMember
-            {
-                EditAccess = editTeamMemberRequest.HasEditAccess,
-                Role = editTeamMemberRequest.Role,
-                StartupId = editTeamMemberRequest.StartupId,
-                UserId = editTeamMemberRequest.UserId
-            };
-
-             dbcontext.TeamMembers.Update(teamMember);
-             dbcontext.SaveChanges();
-        }
-
         #region Private Methods
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
