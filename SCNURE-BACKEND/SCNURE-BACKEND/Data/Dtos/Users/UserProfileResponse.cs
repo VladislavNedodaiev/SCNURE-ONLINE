@@ -8,6 +8,7 @@ namespace SCNURE_BACKEND.Data.Dtos.Users
 {
 	public class UserProfileResponse
 	{
+		public int UserId { get; set; }
 		public string FirstName { get; set; }
 		public string SecondName { get; set; }
 		public string Photo { get; set; }
