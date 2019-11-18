@@ -45,6 +45,7 @@
 					<span class="highlight"></span>
 					<span class="bar"></span>
 					<label>Назва стартапу</label>
+					<p id="error_title"></p>
 				</div>
 				
 				<div class="group">      
@@ -52,6 +53,7 @@
 					<span class="highlight"></span>
 					<span class="bar"></span>
 					<label>Опишіть мету та основні положення стартапу та засоби необхідні для її реалізації.</label>
+					<p id="error_description"></p>
 				</div>
 	
 				<div class="form-group">
@@ -61,30 +63,38 @@
 		</div>
 	</body>
 	<script>
-		function createStartup(event) { // connect to post
+
+		if (window.localStorage.getItem('token') && window.localStorage.getItem('user_id')) {
+			var token = window.localStorage.getItem('token');
+			var user_id = window.localStorage.getItem('user_id');
+		} else
+			window.location.href = "Startups.html?error=create_st_not_authorized";
+		
+		fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?userId=' + user_id)
+			.then(handleResponse)
+			.then(function(data) {
+				if (!data.membership)
+					window.location.href = "Startups.html?error=create_st_not_membership";
+			});
+		
+		function createStartup(event) {
 			event.preventDefault();
 	
 			title = document.getElementById("titleInp").value;
 			description = document.getElementById("descriptionInp").value;
 
-			if(title && description) {
+			if(description && (/^.{1,30}$/).test(document.getElementById('titleInp').value)) {
 				const requestOptions = {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
 					body: JSON.stringify( { title: title, 
-											foundationYear: "", 
-											publicationDate: "",
-											photo: "null",
-											description: description,
-											website: "",
-											phone: "",
-											email: ""
+											description: description
 										})
 				};
 
-			fetch(window.env.apiUrl/*right api*/, requestOptions)
+			fetch("http://eliasb13-001-site1.itempurl.com/api/startups/create-startup", requestOptions)
 				.then(handleResponse)
-				.then(data => alert(JSON.stringify(data)));
+				.then(data => window.location.href = "startup.html?id=" + data.startupId);
 			}
 		}
 		
@@ -101,8 +111,45 @@
 				return data;
 			});
 		}
+		
+	// Проверка titleInp
+	document.getElementById('titleInp').onblur = function() {
+		if(!(/^.{1,30}$/).test(document.getElementById('titleInp').value)) {
+			document.getElementById('error_title').innerHTML = "Назва повинна бути не довша ніж 30 символів";
+			document.getElementById('error_title').style.color = "red";
+		}
+		else {
+			document.getElementById('descriptionInp').style.borderBottom = "1px solid #757575";
+			document.getElementById('error_title').innerHTML = "";
+		}
+	}
+	
+	// Проверка descriptionInp
+	document.getElementById('descriptionInp').onblur = function() {
+		if(!document.getElementById('descriptionInp').value) {
+			document.getElementById('error_description').innerHTML = "Опис не може бути пустим";
+			document.getElementById('error_description').style.color = "red";
+		}
+		else {
+			document.getElementById('descriptionInp').style.borderBottom = "1px solid #757575";
+			document.getElementById('error_description').innerHTML = "";
+		}
+	}
 
 	</script>
+	
+	<script>
+	$(window).bind('scroll',function(e){
+    parallaxScroll();
+});
+ 
+function parallaxScroll(){
+    var scrolled = $(window).scrollTop();
+    $('.yep_bg').css('top',(250+(scrolled*.5))+'px');
+    $('.content').css('top',(0-(scrolled*.5))+'px');
+}
+	</script>
+
 	<script>
 		window.onload = function() {
 		var ntf = document.getElementById('ntf');

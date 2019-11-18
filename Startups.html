@@ -5,13 +5,15 @@
 		
 		<title>Startups NURE</title>
 		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
 		<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="css/style.css">
 		<link href="https://fonts.googleapis.com/css?family=Oxygen&display=swap" rel="stylesheet">
+		
 	</head>
-	<body style="word-wrap: break-word; overflow-y: hidden;">
+	<body style="word-wrap: break-word;">
 		<div class="yep_bg"><img src="photo/yep_bg.png"></div>
 		
 		<header class="sticky-top" style="background-color: white">
@@ -27,20 +29,29 @@
 				</div>
 			</nav>
 		</header>
-
-		<div class="year">
-			<div class="textYear">
-				<p>2019</p>
+		<div class="content_">
+			<div class="year">
+				<div class="textYear"><p>2019</p></div>
+			</div>
+			<div class="container-1" id="startupsBlock"> 
+				<!-- Startups-->
 			</div>
 		</div>
-		<div class="container-1" id="startupsBlock"> 
-			<!-- Startups-->
-		</div>
-
 	</body>
 	<script>
+	$(window).bind('scroll',function(e){
+    parallaxScroll();
+});
+ 
+function parallaxScroll(){
+    var scrolled = $(window).scrollTop();
+    $('.yep_bg').css('top',(250+(scrolled*.5))+'px');
+    $('.content_').css('top',(0-(scrolled*.5))+'px');
+}
+	</script>
+	<script>
 
-		fetch('http://eliasb13-001-site1.itempurl.com/api/startups/startups')
+		fetch('http://eliasb13-001-site1.itempurl.com/api/startups/all-startups')
 			.then(handleResponse)
 			.then(function(data) {
 				for (var i = 0; i < data.length; i++) {
@@ -77,7 +88,7 @@
 									"</div>";
 									
 			mainDiv.onclick = function() { 
-				window.location.href = "startup.html?id=" + id; // указать правильній путь к стартапу
+				window.location.href = "startup.html?id=" + id;
 			};
 			
 			document.getElementById('startupsBlock').appendChild(mainDiv);

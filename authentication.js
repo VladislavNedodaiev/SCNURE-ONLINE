@@ -5,7 +5,14 @@ function register(event) {
 	let email = document.getElementById("emailInp").value;
 	let password = document.getElementById("passInp").value;
 	let passwordConfirmation = document.getElementById("passConfInp").value;
-
+	
+	if (email.includes("@") == false) {
+		alert("Некоректний email")
+	}
+	if (passwordConfirmation != password) {
+		alert("Введіть однакові паролі")
+	}
+	
 	if(login && email && password && passwordConfirmation && password === passwordConfirmation) { // add some validation
 		const requestOptions = {
 			method: 'POST',

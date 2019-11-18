@@ -78,7 +78,17 @@
 		<!-- <script type="text/javascript" src="auth-header.js"></script> -->
 	</body>
 	
-	
+	<script>
+	$(window).bind('scroll',function(e){
+    parallaxScroll();
+});
+ 
+function parallaxScroll(){
+    var scrolled = $(window).scrollTop();
+    $('.yep_bg').css('top',(250+(scrolled*.5))+'px');
+    $('.content').css('top',(0-(scrolled*.5))+'px');
+}
+	</script>
 	<script>
 	// Targets all textareas with class "txta"
 let textareas = document.querySelectorAll('.txta'),

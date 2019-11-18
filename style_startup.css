@@ -1,0 +1,98 @@
+.yep_bg {
+  position: absolute;
+  top: 35%;
+  left: 4%;
+  z-index: -1; 
+}
+
+.menu_yep, .menu_ntf {
+  margin-left: 0 !important;
+}
+
+.menu_block {
+  width: 70%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.nav {
+  text-align: center;
+}
+
+.main-menu {
+  margin-top: 20px;
+  display: inline-block;
+  width: 100%;
+}
+.menu_item {
+  margin: 0 0 0 4%;
+}
+.menu_block a {
+  color: black;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: 'Montserrat', Tahoma;
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px;
+  outline: none;
+  text-align: center;
+  border: 0;
+}
+
+.menu_item:hover, .submenu_item:hover {
+  background: #f18415;
+  color: white;
+}
+
+.container {
+  margin: auto;
+  width: 80%;
+  border: 1px solid black;
+  margin-top: 40px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+
+}
+
+.container .blockInfo {
+  width: 77%;
+  border: 1px solid black;  
+  text-align: center;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.blockImg {
+  width: 20%; 
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px  solid black;
+  text-align: center;
+  margin-right: 20px;
+}
+
+.blockImg img  {
+  width: 100%;
+  border-bottom: 1px solid;
+}
+
+
+.blockInfo {
+  position: relative;
+}
+
+.blockText {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+}
+
+.txt {
+  text-transform: uppercase;
+}
+

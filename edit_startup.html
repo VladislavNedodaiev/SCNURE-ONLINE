@@ -4,12 +4,12 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		
 		<title>Edit Startup</title>
-		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
 		<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="css/style.css">
-		<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 	</head>
 	<body style="word-wrap: break-word;">
 		<div class="yep_bg"><img src="photo/yep_bg.png"></div>
@@ -23,7 +23,7 @@
 					<a class="menu_item" href="Startups.html">СТАРТАПИ</a>
 					<a class="menu_item" href="#">ПОДІЇ</a>
 					<div class="menu_item sub_item">
-						<a href="#">startuper2000 <img src="photo/temp_profile.jpg" height="20" style="border-radius: 30px; margin-left: 5px;"></a>
+						<a href="#"><span id="account_login">startuper2000</span> <img src="photo/temp_profile.jpg" height="20" style="border-radius: 30px; margin-left: 5px;"></a>
 						<div class="submenu">
 							<a class="submenu_item" href="#">МІЙ ПРОФІЛЬ</a>
 							<a class="submenu_item" href="#">МОЇ СТАРТАПИ</a>
@@ -36,6 +36,7 @@
 			</nav>
 		</header>
 		
+		
 		<div class="content">
 			<h2 class="text-center">РЕДАГУВАННЯ СТАРТАПУ</h4>
 			<form method="POST" onsubmit="saveStartup(event)">
@@ -45,9 +46,10 @@
 					<span class="highlight"></span>
 					<span class="bar"></span>
 					<label>Назва стартапу</label>
+					<p id="error_title"></p>
 				</div>
 				
-				<div class="file-upload">
+				<!--<div class="file-upload">
 					<button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Завантажити зображення</button>
 					<input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
 					<div class="image-upload-wrap" style="display:none">
@@ -57,138 +59,564 @@
 						</div>
 						<img class="file-upload-image" src="#" alt="your image"/>
 					</div>
-				</div>
+				</div>-->
 					
 				<div class="group">      
 					<textarea id="descriptionInp" class="txta" name="comment" required></textarea>
 					<span class="highlight"></span>
 					<span class="bar"></span>
 					<label>Опишіть мету та основні положення стартапу та засоби необхідні для її реалізації.</label>
+					<p id="error_description"></p>
 				</div>
-				
-				<!--<div class="group">      
-					<input id="titleInp"type="text" required>
-					<span class="highlight"></span>
-					<span class="bar"></span>
-					<label>Посилання на бізнес-модель CANVAS</label>
-				</div>-->
-				
+		
 				
 				<h4 style="margin-bottom: 30px;" >Контактна інформація</h4>
 				
 				<h5 class="fas fa-globe contact-icon"></h5>
 				<div class="group contact">      
-					<input id="websiteInp" type="text" required>
+					<input id="websiteInp" type="text">
 					<span class="highlight"></span>
 					<span class="bar"></span>
-					<label>Адреса сайту</label>
+					<label class="optional">Адреса сайту</label>
+					<p id="error_website"></p>
 				</div>
 				
 				<h5 class="fas fa-phone contact-icon"></h5>
 				<div class="group contact">      
-					<input id="phoneInp" type="text" required>
+					<input id="phoneInp" type="text">
 					<span class="highlight"></span>
 					<span class="bar"></span>
-					<label>Телефон</label>
+					<label class="optional">Телефон</label>
+					<p id="error_phone"></p>
 				</div>
 				
 				<h5 class="far fa-envelope contact-icon"></h5>
 				<div class="group contact">      
-					<input id="emailInp" type="text" required>
+					<input id="emailInp" type="text">
 					<span class="highlight"></span>
 					<span class="bar"></span>
-					<label>E-mail</label>
+					<label class="optional">E-mail</label>
+					<p id="error_email"></p>
 				</div>
 				
-	
+				<h4 style="margin: 20px 0 10px; display:inline-block;" >Учасники команди</h4>
+				<div id="btn_add_member" class="add_team_member" data-toggle="modal" data-target="#modal_add_member" OnClick="openAddMemberModal()"><span class="fa fa-plus"></span> Додати учасника</div>
+				
+				<div id="team_member_container">
+				<!-- team members -->
+				</div>
+				
+				
 				<div class="form-group">
 					<button type="submit" class="btn btn-create btn-block">Зберегти</button>
 				</div>
-			</form>
+				
+				</form>
+				
+				<!-- Window for adding new member -->  
+				<div id="modal_add_member" class="modal fade" data-backdrop="static" data-keyboard="false">
+					<div class="modal-dialog" style="margin-top: 30vh;" role="document">
+						<div class="modal-content">
+							<form onsubmit="addTeamMember(event)">
+								<div class="modal-header">
+									<h5>Додавання учасника</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" OnClick="CloseAddMemberModal()"><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body" style="margin: 0 15px;">
+									<div class="group">      
+										<input id="team_memberInp" type="text" required autofocus>
+										<span class="highlight"></span>
+										<span class="bar"></span>
+										<label>Логін учасника</label>
+										<p id="error_team_memberInp"></p>
+									</div>
+									<div class="group">      
+										<input id="team_member_roleInp" type="text">
+										<span class="highlight"></span>
+										<span class="bar"></span>
+										<label class="optional" >Роль</label>
+										<p id="error_team_member_roleInp"></p>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" value="" id="checkbox_edit_access" style="width: auto;">
+										<label class="form-check-label" for="defaultCheck1" style=" position: initial;"> Можливість редагувати стартап</label>
+									</div>							
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary btn_grey" data-dismiss="modal" OnClick="CloseAddMemberModal()">Скасувати</button>
+									<button type="submit"  class="btn btn-primary btn_orange">Зберегти</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Window for editing new member -->  
+				<div id="modal_edit_member" class="modal fade" data-backdrop="static" data-keyboard="false">
+					<div class="modal-dialog" style="margin-top: 30vh;" role="document">
+						<div class="modal-content">
+						<form onsubmit="editTeamMember(event)">
+							<div class="modal-header">
+								<h5>Редагування учасника</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body" style="margin: 0 15px;">
+								<div style="margin-bottom: 40px; display: inline-block;">
+									<a class="team_member_photo" href="#"></a>
+									<a href="#" class="team_member_box_name" id="member_name_modal_edit">Иван Иванов</a>
+								</div>
+								<div class="group">      
+									<input id="member_role_modal_edit" type="text">
+									<span class="highlight"></span>
+									<span class="bar"></span>
+									<label class="optional" >Роль</label>
+									<p id="error_team_member_roleInp_edit"></p>
+								</div>
+								<span id="edit_member_index" style="display:none"></span>
+								<div class="form-check" id="checkbox_edit_access_edit_box">
+									<input id="checkbox_edit_access_edit" class="form-check-input" type="checkbox" value=""  style="width: auto;">
+									<label class="form-check-label" for="defaultCheck1" style=" position: initial;"> Можливість редагувати стартап</label>
+								</div>	
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary btn_grey" data-dismiss="modal">Скасувати</button>
+								<button type="submit" class="btn btn-primary btn_orange">Зберегти</button>
+							</div>
+						</form>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Window for deleting member -->  
+				<div id="modal_delete_member" class="modal fade" data-backdrop="static" data-keyboard="false">
+					<div class="modal-dialog" style="margin-top: 30vh;" role="document">
+						<div class="modal-content">
+							<form onsubmit="deleteTeamMember(event)">
+								<div class="modal-header">
+									<h5>Виключення учасника</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body" style="margin: 0 15px;">
+									Ви впевнені, що хочете виключити користувача <span id="delete_member_login" style="font-weight:700"></span> з учасників команди?
+									<span id="delete_member_index" style="display:none"></span>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary btn_grey" data-dismiss="modal">Скасувати</button>
+									<button type="submit" class="btn btn-primary btn_orange">Виключити</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				
 		</div>
 	</body>
 	
-	<script>
-		var title, foundationYear, publicationDate, photo, description, website, phone, email;
-		var str = window.location.search.split('id=');
-		if (str.length != 1 ? str[1].match(/\d+/) != null : false) 
-			id = +str[1];
-		/*else
-			window.location.href = "Startups.html";*/
+<script> // add_team_member
 
-		fetch('http://eliasb13-001-site1.itempurl.com/api/startups/startup?id=' + id)
+	// Для modal_add_member проверка может ли пользователь с этим логинов быть team member
+	var canBeTeamMember = false;
+	var loginModalAddMember = document.getElementById('team_memberInp');
+	
+	loginModalAddMember.onblur = function() {
+		function isInTeamAlready(element, index, array) {
+			if(element.login == loginModalAddMember.value)
+				return true;
+			return false;
+		}
+			
+		if (arrTeam.find(isInTeamAlready)) {
+			loginModalAddMember.style.borderBottom = "2px red solid"; 
+				document.getElementById('error_team_memberInp').innerHTML = "Цей користувач вже знаходиться у команді";
+				document.getElementById('error_team_memberInp').style.color = "red";
+				canBeTeamMember = false;
+		} else {
+			fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?login=' + loginModalAddMember.value)
+				.then(response => {
+					return response.text().then(text => {
+						const data = text && JSON.parse(text);
+
+						if (!response.ok) {
+							const error = (data && data.message) || response.statusText;
+					
+							loginModalAddMember.style.borderBottom = "2px red solid"; 
+							document.getElementById('error_team_memberInp').innerHTML = "Немає користувача з таким логіном";
+							document.getElementById('error_team_memberInp').style.color = "red";
+							canBeTeamMember = false
+					
+							return Promise.reject(error);
+						}
+							return data;
+					});
+				}).then(function(data) {
+					loginModalAddMember.style.borderBottom = "2px green solid";
+					document.getElementById('error_team_memberInp').innerHTML = "";
+					canBeTeamMember = true;
+				});
+		}
+	}
+	
+	// Проверка team_member_roleInp
+	document.getElementById('team_member_roleInp').onblur = function() {
+		if(!(/^.{0,30}$/).test(document.getElementById('team_member_roleInp').value) ) {
+			document.getElementById('error_team_member_roleInp').innerHTML = "Роль повинна бути не довша ніж 30 символів";
+			document.getElementById('error_team_member_roleInp').style.color = "red";
+		}
+		else {
+			loginModalAddMember.style.borderBottom = "1px solid #757575";
+			document.getElementById('error_team_member_roleInp').innerHTML = "";
+		}
+	}
+	
+	function addTeamMember(event) {
+		event.preventDefault();
+			
+		if(canBeTeamMember && (/^.{0,30}$/).test(document.getElementById('team_member_roleInp').value)) {
+			var mainDiv = document.createElement("div");
+			mainDiv.setAttribute("class", "team_member_box");
+			mainDiv.setAttribute("id", "team_member_" + arrTeam.length);
+			mainDiv.innerHTML = "<p class='team_member_photo' href='#'></p>" +
+								"<p class='team_member_box_name'>" + loginModalAddMember.value + "</p>" +
+								"<div id='btn_edit_member' class='team_member_edit' data-toggle='modal' data-target='#modal_edit_member' OnClick='onClick_edit_member(" + arrTeam.length + ")'><span class='fa fa-edit'></span></div>" +
+								"<div id='btn_delete_member' class='team_member_delete' data-toggle='modal' data-target='#modal_delete_member' OnClick='onClick_delete_member(" + arrTeam.length + ")'><span class='fa fa-times'></span></div>" +
+								"<div class='team_member_role'>" + document.getElementById('team_member_roleInp').value + "</div>";
+		
+			document.getElementById('team_member_container').appendChild(mainDiv);
+				
+			const requestOptions = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+				body: JSON.stringify({ 	startupId: st_id, 
+										login: loginModalAddMember.value, 
+										role: document.getElementById('team_member_roleInp').value, 
+										hasEditAccess: document.getElementById('checkbox_edit_access').checked?true:false 
+									})
+			};
+
+			fetch('http://eliasb13-001-site1.itempurl.com/api/startups/add-team-member', requestOptions)
+				.then(handleResponse)
+				.then(fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?login=' + loginModalAddMember.value)
+					.then(handleResponse)
+					.then(function(data) {
+						arrTeam.push({	id: data.userId,
+										login: loginModalAddMember.value, 
+										role: document.getElementById('team_member_roleInp').value, 
+										editAccess: document.getElementById('checkbox_edit_access').checked?true:false});
+					})
+				);
+					
+			$('#modal_add_member').modal('hide');
+		}
+	}	
+	
+	function openAddMemberModal() {
+		loginModalAddMember.value = '';
+		document.getElementById('team_member_roleInp').value = '';
+		document.getElementById('checkbox_edit_access').checked = false;
+		loginModalAddMember.style.borderBottom = "1px solid #757575";
+		document.getElementById('error_team_memberInp').innerHTML = "";
+	}
+		
+	function CloseAddMemberModal() {
+		loginModalAddMember.style.borderBottom = "1px solid #757575";
+		document.getElementById('error_team_memberInp').innerHTML = "";
+	}
+</script>
+	
+<script> // delete team member
+	function deleteTeamMember(event) {
+		event.preventDefault();
+		var index = document.getElementById('delete_member_index').innerHTML;
+		
+		const requestOptions = {
+			method: 'DELETE',
+			headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}
+		};
+		
+		fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?login=' + arrTeam[index].login)
 			.then(handleResponse)
 			.then(function(data) {
-				document.getElementById('titleInp').value = data.title; // + загрузка фото
-				document.getElementById('descriptionInp').value = data.description;
-				document.getElementById('websiteInp').value = data.website;
-				document.getElementById('phoneInp').value = data.phone;
-				document.getElementById('emailInp').value = data.email;
-				foundationYear = data.foundationYear;
-				publicationDate = data.publicationDate;
+				fetch('http://eliasb13-001-site1.itempurl.com/api/startups/remove-team-member?userId=' + data.userId + '&startupId=' + st_id, requestOptions)
+					.then(handleResponse)
+					.then(data => {
+						arrTeam.splice(index, 1);
+						document.getElementById("team_member_" + index).remove();
+					});
 			});
-			
-		function handleResponse(response) {
-			return response.text().then(text => {
-				const data = text && JSON.parse(text);
+		$('#modal_delete_member').modal('hide');
+	}
+	
+	function onClick_delete_member(index) {
+		document.getElementById('delete_member_login').innerHTML = arrTeam[index].login;
+		document.getElementById('delete_member_index').innerHTML = index;
+	} 
+</script>
+	
+<script> // edit team member
 
-				if (!response.ok) {
-					const error = (data && data.message) || response.statusText;
-
-					return Promise.reject(error);
-				}
-
-				return data;
-			});
+	// Проверка team_member_roleInp
+	document.getElementById('member_role_modal_edit').onblur = function() {
+		if(!(/^.{0,30}$/).test(document.getElementById('member_role_modal_edit').value) ) {
+			document.getElementById('error_team_member_roleInp_edit').innerHTML = "Роль повинна бути не довша ніж 30 символів";
+			document.getElementById('error_team_member_roleInp_edit').style.color = "red";
 		}
+		else {
+			loginModalAddMember.style.borderBottom = "1px solid #757575";
+			document.getElementById('error_team_member_roleInp_edit').innerHTML = "";
+		}
+	}
+	
+	function editTeamMember(event) {
+		event.preventDefault();
+		var index = document.getElementById('edit_member_index').innerHTML;
 		
-		function saveStartup(event) { // connect to post
-			event.preventDefault();
-	
-			title = document.getElementById("titleInp").value;
-			description = document.getElementById("descriptionInp").value;
-			website = document.getElementById("websiteInp").value;
-			phone = document.getElementById("phoneInp").value;
-			email = document.getElementById("emailInp").value;
-
-			if(title && description) { // add some validation
-				const requestOptions = {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify( { startupId: id, 
-											title: title, 
-											foundationYear: foundationYear, 
-											publicationDate: publicationDate,
-											photo: "null", // edit photo
-											description: description,
-											website: website,
-											phone: phone,
-											email: email
-										})
-				};
-
-			fetch(window.env.apiUrl /*right api*/, requestOptions)
+		if((/^.{0,30}$/).test(document.getElementById('member_role_modal_edit').value)) {
+			fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?login=' + arrTeam[index].login)
 				.then(handleResponse)
-				.then(data => alert(JSON.stringify(data)));
-			}
-		}
+				.then(function(data) {
+					const requestOptions = {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+						body: JSON.stringify({ 	
+							startupId: st_id, 
+							userId: data.userId, 
+							role: document.getElementById('member_role_modal_edit').value, 
+							hasEditAccess: document.getElementById('checkbox_edit_access_edit').checked 
+						})
+					};
+				
+					fetch('http://eliasb13-001-site1.itempurl.com/api/startups/edit-team-member', requestOptions)
+						.then(handleResponse)
+						.then( function() {
+							arrTeam[index].role = document.getElementById('member_role_modal_edit').value;
+							arrTeam[index].editAccess = document.getElementById('checkbox_edit_access_edit').checked;
+							document.getElementById('team_member_' + index).lastChild.innerHTML = arrTeam[index].role;	
+						});
+				});
+			$('#modal_edit_member').modal('hide');
+		}	
+	}
+	
+	function onClick_edit_member(index) {
+		document.getElementById('member_name_modal_edit').innerHTML = arrTeam[index].login;
+		document.getElementById('member_role_modal_edit').value = arrTeam[index].role;
+		document.getElementById('checkbox_edit_access_edit').checked = arrTeam[index].editAccess;
+		document.getElementById('edit_member_index').innerHTML = index;
+		if(arrTeam[index].login == document.getElementById('account_login').innerHTML) {
+			document.getElementById("checkbox_edit_access_edit_box").hidden = true;
+		} else
+			document.getElementById("checkbox_edit_access_edit_box").hidden = false;
+	} 
+</script>
 
-	</script>
+<script> // Checks + displays and general
+	var arrTeam = [];
+	
+	// Проверка на not_authorized
+	if (window.localStorage.getItem('token') && window.localStorage.getItem('user_id')) {
+		var token = window.localStorage.getItem('token');
+		var userId = window.localStorage.getItem('user_id');
+	} else
+		window.location.href = "Startups.html?error=create_st_not_authorized";
+		
+	// Логин в меню
+	fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?userId=' + userId)
+		.then(handleResponse)
+		.then(function(data) {
+			document.getElementById('account_login').innerHTML = data.login;
+		});
+	
+	// Проверка на параметр id
+	var st_id = (new URL(window.location.href)).searchParams.get("id");
+	if(st_id == null)
+		window.location.href = "Startups.html";
+	
+	// Проверка titleInp
+	document.getElementById('titleInp').onblur = function() {
+		if(!(/^.{1,30}$/).test(document.getElementById('titleInp').value)) {
+			document.getElementById('error_title').innerHTML = "Назва повинна бути не довша ніж 30 символів";
+			document.getElementById('error_title').style.color = "red";
+		}
+		else {
+			loginModalAddMember.style.borderBottom = "1px solid #757575";
+			document.getElementById('error_title').innerHTML = "";
+		}
+	}
+	
+	// Проверка descriptionInp
+	document.getElementById('descriptionInp').onblur = function() {
+		if(!document.getElementById('descriptionInp').value) {
+			document.getElementById('error_description').innerHTML = "Опис не може бути пустим";
+			document.getElementById('error_description').style.color = "red";
+		}
+		else {
+			loginModalAddMember.style.borderBottom = "1px solid #757575";
+			document.getElementById('error_description').innerHTML = "";
+		}
+	}
+	
+	// Проверка error_website
+	document.getElementById('websiteInp').onblur = function() {
+		if(!(/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$/).test(document.getElementById('websiteInp').value) && 
+			!(document.getElementById('websiteInp').value == '')) {
+			document.getElementById('error_website').innerHTML = "Невірний формат сайту";
+			document.getElementById('error_website').style.color = "red";
+		}
+		else {
+			loginModalAddMember.style.borderBottom = "1px solid #757575";
+			document.getElementById('error_website').innerHTML = "";
+		}
+	}
+	
+	// Проверка phoneInp
+	document.getElementById('phoneInp').onblur = function() {
+		if(!(/^[0-9]{10}$/).test(document.getElementById('phoneInp').value) && 
+			!(document.getElementById('phoneInp').value == '')) {
+			document.getElementById('error_phone').innerHTML = "Невірний формат телефону";
+			document.getElementById('error_phone').style.color = "red";
+		}
+		else {
+			loginModalAddMember.style.borderBottom = "1px solid #757575";
+			document.getElementById('error_phone').innerHTML = "";
+		}
+	}
+	
+	// Проверка emailInp
+	document.getElementById('emailInp').onblur = function() {
+		if(!(/^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/).test(document.getElementById('emailInp').value) && 
+			!(document.getElementById('emailInp').value == '')) {
+			document.getElementById('error_email').innerHTML = "Невірний формат пошти";
+			document.getElementById('error_email').style.color = "red";
+		}
+		else {
+			loginModalAddMember.style.borderBottom = "1px solid #757575";
+			document.getElementById('error_email').innerHTML = "";
+		}
+	}
+		
+	// загрузка инфы в формы + проверка на teamMember и editAccess
+	fetch('http://eliasb13-001-site1.itempurl.com/api/startups/startup?id=' + st_id)
+		.then(handleResponse)
+		.then(function(data) {
+			document.getElementById('titleInp').value = data.title; // + загрузка фото
+			document.getElementById('descriptionInp').value = data.description;
+			document.getElementById('websiteInp').value = data.website;
+			document.getElementById('phoneInp').value = data.phone;
+			document.getElementById('emailInp').value = data.email;
+			foundationYear = data.foundationYear;
+			publicationDate = data.publicationDate;
+		}).then(fetch('http://eliasb13-001-site1.itempurl.com/api/startups/team-members?startupId=' + st_id)
+			.then(handleResponse)
+			.then(function(tm_data) {
+				var isStartupMember = false, isEditAccess = false;
+				for (var i = 0; i < tm_data.length; i++) {
+					if(tm_data[i].userId == userId) {
+						isStartupMember = true;
+						if(tm_data[i].editAccess)
+								isEditAccess = true;
+					}
+					arrTeam.push({ id: tm_data[i].userId, login: '', role: tm_data[i].role, editAccess: tm_data[i].editAccess});
+					createTeamMember(i);	
+				}
+				if(!isStartupMember)
+					window.location.href = "Startups.html?error=create_st_not_teamMember";
+				else if(!isEditAccess)
+					window.location.href = "Startups.html?error=create_st_not_editAccess";
+			}));
+		
+	// создание отображения тим мембера
+	function createTeamMember(i) {
+		fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?userId=' + arrTeam[i].id)
+			.then(handleResponse)
+			.then(function(data) {
+				var mainDiv = document.createElement("div");
+				mainDiv.setAttribute("class", "team_member_box");
+				mainDiv.setAttribute("id", "team_member_" + i);
+				arrTeam[i].login = data.login;
+				console.log(i + ' ' + arrTeam[i].login)
+				if(userId != arrTeam[i].id) {
+					mainDiv.innerHTML = "<p class='team_member_photo' href='#'></p>" +
+									"<p class='team_member_box_name'>" + arrTeam[i].login + "</p>" +
+									"<div id='btn_edit_member' class='team_member_edit' data-toggle='modal' data-target='#modal_edit_member' OnClick='onClick_edit_member(" + i + ")'><span class='fa fa-edit'></span></div>" +
+									"<div id='btn_delete_member' class='team_member_delete' data-toggle='modal' data-target='#modal_delete_member' OnClick='onClick_delete_member(" + i + ")'><span class='fa fa-times'></span></div>" +
+									"<div class='team_member_role'>" + arrTeam[i].role + "</div>";
+				} else {
+					mainDiv.innerHTML = "<p class='team_member_photo' href='#'></p>" +
+									"<p class='team_member_box_name'>" + arrTeam[i].login + "</p>" +
+									"<div id='btn_edit_member' class='team_member_edit' data-toggle='modal' data-target='#modal_edit_member' OnClick='onClick_edit_member(" + i + ")'><span class='fa fa-edit'></span></div>" +
+									"<div class='team_member_role'>" + arrTeam[i].role + "</div>";
+				}
+				i++;
+				document.getElementById('team_member_container').appendChild(mainDiv);			
+			});
+	}
+			
+	function handleResponse(response) {
+		return response.text().then(text => {
+			
+			const data = text && JSON.parse(text);
+			
+			if (!response.ok) {
+				const error = (data && data.message) || response.statusText;
+					
+				return Promise.reject(error);
+			}
+
+			return data;
+		});
+	}
+</script>
+
+<script> // Edit startup
+	function saveStartup(event) {
+		event.preventDefault();
+	
+		var description = document.getElementById("descriptionInp").value;
+		var rightTitle = (/^.{1,30}$/).test(document.getElementById('titleInp').value);
+		var rightWebsite = (/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$/).test(document.getElementById('websiteInp').value) || document.getElementById('websiteInp').value == '';
+		var rightPhone = (/^[0-9]{10}$/).test(document.getElementById('phoneInp').value) || document.getElementById('phoneInp').value == '';
+		var rightEmail = (/^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/).test(document.getElementById('emailInp').value) || document.getElementById('emailInp').value == '';
+		
+		if(rightTitle && description && rightWebsite && rightPhone && rightEmail) {
+			const requestOptions = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+				body: JSON.stringify( { startupId: st_id, 
+										title: document.getElementById("titleInp").value, 
+										description: description,
+										website: document.getElementById("websiteInp").value ? document.getElementById("websiteInp").value : null,
+										phone: document.getElementById("phoneInp").value ? document.getElementById("phoneInp").value : null,
+										email: document.getElementById("emailInp").value ? document.getElementById("emailInp").value : null
+									})
+				}; 
+		
+		
+		fetch("http://eliasb13-001-site1.itempurl.com/api/startups/edit-startup", requestOptions)
+			.then(handleResponse)
+			.then(function(data) {
+				window.location.href = "startup.html?id=" + st_id;
+			});
+		}
+	}	
+</script>
 	
 	
-	<script>
+<script>
+	// Движение фона
 	$(window).bind('scroll',function(e){
-    parallaxScroll();
-});
+		parallaxScroll();
+	});
  
-function parallaxScroll(){
-    var scrolled = $(window).scrollTop();
-    $('.yep_bg').css('top',(250+(scrolled*.3))+'px');
-    $('.content').css('top',(0-(scrolled*.5))+'px');
-}
-	</script>
-	<script>
-		window.onload = function() {
+	function parallaxScroll(){
+		var scrolled = $(window).scrollTop();
+		$('.yep_bg').css('top',(250+(scrolled*.5))+'px');
+		$('.content').css('top',(0-(scrolled*.5))+'px');
+	}
+</script>
+
+<script>
+	// значок уведомлений
+	window.onload = function() {
 		var ntf = document.getElementById('ntf');
 		var child = ntf.firstChild;
 		ntf.onmouseover = function(){
@@ -199,9 +627,10 @@ function parallaxScroll(){
 			child.src = 'photo/menu_ntf_black.png';
 			ntf.style.backgroundColor = '#ffffff';
 		}
-		}
+	}
 	</script>
-	<script>
+
+<script>
 	// Targets all textareas with class "txta"
 let textareas = document.querySelectorAll('.txta'),
     hiddenDiv = document.createElement('div'),
@@ -267,7 +696,8 @@ for(let i of textareas) {
     });
   })(i);
 }
-	</script>
+</script>
+
 <script>
 	// Upload startup image
 	function readURL(input) {
