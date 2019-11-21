@@ -1,17 +1,17 @@
 var url = new URL(window.location.href);
 var usrid = url.searchParams.get("user_id");
 
-/*if (usrid == null) {
+if (usrid == null) {
 	
-	if (window.localStorage.getItem('user_id'))
-		usrid = window.localStorage.getItem('user_id');
+	if (window.localStorage.getItem('id'))
+		usrid = window.localStorage.getItem('id');
 	else
 		window.location.href = "startups.html?error=" + encodeURI("Такого користувача не існує!");
 }
-else if (window.localStorage.getItem('user_id') && usrid != window.localStorage.getItem('user_id'))
-	window.location.href = "startups.html?error=" + encodeURI("Ви не маєте права редагувати цей профіль!");*/
+else if (usrid != window.localStorage.getItem('id'))
+	window.location.href = "startups.html?error=" + encodeURI("Ви не маєте права редагувати цей профіль!");
 
-fetch(env.apiUrl + '/api/Accounts/profile?userId=' + usrid)
+fetch(env.apiUrl + '/api/Accounts?userId=' + usrid)
 	.then(handleResponse)
 	.then(function(data) {
 		
@@ -56,7 +56,7 @@ function handleResponse(response) {
 		if (!response.ok) {
 			const error = (data && data.message) || response.statusText;
 
-			window.location.href = "startups.html?error="+encodeURI("Сталася помилка!");
+			//window.location.href = "startups.html?error="+encodeURI("Сталася помилка!");
 			
 			return Promise.reject(error);
 		}
@@ -165,4 +165,26 @@ function message(text, type) {
 	
 	document.getElementById('alert-text').innerHTML=text;
 
+}
+
+if (window.localStorage.getItem('token') && window.localStorage.getItem('id')) {
+	fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?userId=' + window.localStorage.getItem('id'))
+		.then(handleMenuResponse)
+		.then(function(data) {
+			document.getElementById('account_login').innerHTML = data.login;
+		});
+}
+		
+function handleMenuResponse(response) {
+	return response.text().then(text => {
+		const data = text && JSON.parse(text);
+
+		if (!response.ok) {
+			const error = (data && data.message) || response.statusText;
+
+			return Promise.reject(error);
+		}
+
+		return data;
+	});
 }

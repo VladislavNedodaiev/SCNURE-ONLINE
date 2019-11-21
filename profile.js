@@ -3,8 +3,8 @@ var usrid = url.searchParams.get("user_id");
 
 if (usrid == null) {
 	
-	if (window.localStorage.getItem('user_id'))
-		usrid = window.localStorage.getItem('user_id');
+	if (window.localStorage.getItem('id'))
+		usrid = window.localStorage.getItem('id');
 	else
 		window.location.href = "startups.html?error=" + encodeURI("Такого користувача не існує!");//encodeURI(text)
 }
@@ -15,10 +15,10 @@ fetch(env.apiUrl + '/api/Accounts/profile?userId=' + usrid)
 
 		showProfile(data);
 		
-		if (url.searchParams.get('user_id') == window.localStorage.getItem('user_id'))
+		if (data.userId == window.localStorage.getItem('id'))
 			showOwnProfile(data);
 		
-		if (window.localStorage.getItem('admin') == true)
+		if (window.localStorage.getItem('isAdmin'))
 			showForAdmin(data);
 		
 	});
@@ -72,19 +72,19 @@ function showOwnProfile(data) {
 	else if (data.membership == 2) 
 		document.getElementById('membership').innerHTML = '<span class="text-muted">Запит на членство надіслано</span> ';
 		
-	document.getElementById('edit').innerHTML= '<a href="edit_profile.php"><i class="fas fa-pencil-alt"></i></a>';
+	document.getElementById('edit').innerHTML= '<a href="edit_profile.html"><i class="fas fa-pencil-alt"></i></a>';
 	
-	showEverythingProfile(data);
+	showProfile(data);
 
 }
 
 function showForAdmin(data) {
 
-	document.getElementById('membership').innerHTML = '<a class="text-success" href="add_member.php">Надати членство <i class="fas fa-arrow-alt-circle-up"></i></a>';
+	document.getElementById('membership').innerHTML = '<a class="text-success" href="add_member.html">Надати членство <i class="fas fa-arrow-alt-circle-up"></i></a>';
 
 	document.getElementById('ban').innerHTML = '<a class="text-danger" href="ban">Забанити <i class="fas fa-ban"></i></a>';
 	
-	showEverythingProfile(data);
+	showProfile(data);
 
 }
 
@@ -97,6 +97,28 @@ function handleResponse(response) {
 
 			window.location.href = "startups.html?error="+encodeURI("Такого користувача не існує!");
 			
+			return Promise.reject(error);
+		}
+
+		return data;
+	});
+}
+
+if (window.localStorage.getItem('token') && window.localStorage.getItem('id')) {
+	fetch('http://eliasb13-001-site1.itempurl.com/api/Accounts/profile?userId=' + window.localStorage.getItem('id'))
+		.then(handleMenuResponse)
+		.then(function(data) {
+			document.getElementById('account_login').innerHTML = data.login;
+		});
+}
+		
+function handleMenuResponse(response) {
+	return response.text().then(text => {
+		const data = text && JSON.parse(text);
+
+		if (!response.ok) {
+			const error = (data && data.message) || response.statusText;
+
 			return Promise.reject(error);
 		}
 
