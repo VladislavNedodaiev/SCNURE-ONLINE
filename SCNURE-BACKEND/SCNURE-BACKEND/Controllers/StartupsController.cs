@@ -43,9 +43,9 @@ namespace SCNURE_BACKEND.Controllers
                 return Ok(clientResult);
             }
             catch(Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
+			{
+				return BadRequest(new { message = exception.Message });
+			}
         }
 
         [AllowAnonymous]
@@ -59,9 +59,9 @@ namespace SCNURE_BACKEND.Controllers
                 return Ok(mappedTeamMembers);
             }
             catch (Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
+			{
+				return BadRequest(new { message = exception.Message });
+			}
         }
 
         [AllowAnonymous]
@@ -75,10 +75,27 @@ namespace SCNURE_BACKEND.Controllers
                 return Ok(clientResult);
             }
             catch (Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
+			{
+				return BadRequest(new { message = exception.Message });
+			}
         }
+
+		[Authorize]
+		[HttpGet("my-startups")]
+		public async Task<IActionResult> GetMyStartups()
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+				var startups = await startupService.GetMyStartups(contextUserId);
+				var startupDtos = remoteStartupMapper.MapRemoteStartups(startups);
+				return Ok(startupDtos);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
 
 		[Authorize]
 		[HttpPost("add-team-member")]
@@ -92,7 +109,7 @@ namespace SCNURE_BACKEND.Controllers
 				if (!await userService.HasEditAccess(user.UserId, addTeamMemberRequest.StartupId))
 					return BadRequest(new { message = "Current user can't add team members" });
 
-				await userService.AddTeamMember(addTeamMemberRequest);
+				await startupService.AddTeamMember(addTeamMemberRequest);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -120,9 +137,9 @@ namespace SCNURE_BACKEND.Controllers
                 return Ok(clientAddeedStartup);
             }
             catch (Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
+			{
+				return BadRequest(new { message = exception.Message });
+			}
         }
 
         [Authorize]
@@ -179,9 +196,28 @@ namespace SCNURE_BACKEND.Controllers
                 return Ok(remoteStartupMapper.MapRemoteStartup(updatedStartup));
             }
             catch (Exception exception)
+			{
+				return BadRequest(new { message = exception.Message });
+			}
+        }
+
+        [Authorize]
+        [HttpPost("edit-team-member")]
+        public async Task<IActionResult> RemoveStartupTeamMember([Required]EditTeamMemberRequest requestBody)
+        {
+            try
             {
-                return BadRequest(exception.Message);
+                int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+                var contextUser = await userService.GetByIdAsync(contextUserId);
+
+                await startupService.EditTeamMember(requestBody, contextUser);
+
+                return Ok();
             }
+            catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
         }
 
 		[Authorize]
@@ -196,7 +232,7 @@ namespace SCNURE_BACKEND.Controllers
 				if (!await userService.HasEditAccess(user.UserId, startupId))
 					return BadRequest(new { message = "Current user can't add team members" });
 
-				await userService.RemoveTeamMember(userId, startupId);
+				await startupService.RemoveTeamMember(userId, startupId);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -204,24 +240,5 @@ namespace SCNURE_BACKEND.Controllers
 				return BadRequest(new { message = ex.Message });
 			}
 		}
-
-        [Authorize]
-        [HttpPost("edit-team-member")]
-        public async Task<IActionResult> RemoveStartupTeamMember([Required]EditTeamMemberRequest requestBody)
-        {
-            try
-            {
-                int contextUserId = int.Parse(HttpContext.User.Identity.Name);
-                var contextUser = await userService.GetByIdAsync(contextUserId);
-
-                startupService.EditTeamMember(requestBody, contextUser);
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-    }
+	}
 }
