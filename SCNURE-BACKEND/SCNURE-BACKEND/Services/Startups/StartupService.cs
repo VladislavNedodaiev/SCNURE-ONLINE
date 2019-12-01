@@ -43,7 +43,10 @@ namespace SCNURE_BACKEND.Services.Users
 
         public async Task<List<Data.Entities.Startup>> GetAllStartups()
         {
-            return await dbContext.Startups.AsQueryable().ToListAsync();
+            return await dbContext.Startups
+				.Include(s => s.Likes)
+				.AsQueryable()
+				.ToListAsync();
         }
 
         public async Task<Data.Entities.Startup> AddStartup(string title, string description, User creator)
@@ -141,6 +144,7 @@ namespace SCNURE_BACKEND.Services.Users
 				throw new ArgumentException("User wasn't found");
 
 			return await dbContext.Startups
+				.Include(s => s.Likes)
 				.Include(s => s.TeamMembers)
 				.Where(s => s.TeamMembers.Any(tm => tm.UserId == userId))
 				.ToListAsync();

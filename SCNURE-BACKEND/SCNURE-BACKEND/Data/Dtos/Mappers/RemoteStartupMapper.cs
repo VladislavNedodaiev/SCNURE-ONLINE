@@ -1,5 +1,6 @@
 ﻿using SCNURE_BACKEND.Data.Dtos;
 using SCNURE_BACKEND.Data.Dtos.Startups;
+using SCNURE_BACKEND.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,13 @@ namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
 
         public List<StartupResponseDto> MapRemoteStartups(IEnumerable<Entities.Startup> remoteStartups)
         {
-            return remoteStartups.Select(x => MapRemoteStartup(x, 0, 0)).ToList();
+			return remoteStartups.Select(x =>
+			{
+				int likesCount = x.Likes.Where(l => l.Value == LikeType.Like).Count();
+				int dislikesCount = x.Likes.Where(l => l.Value == LikeType.Dislike).Count();
+				return MapRemoteStartup(x, likesCount, dislikesCount);
+			})
+			.ToList();
         }
     }
 }
