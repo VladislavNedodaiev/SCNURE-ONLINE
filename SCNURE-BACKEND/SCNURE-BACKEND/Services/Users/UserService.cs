@@ -174,8 +174,6 @@ namespace SCNURE_BACKEND.Services.Users
 			await dbcontext.SaveChangesAsync();
 		}
 
-		
-
 		public async Task<bool> HasEditAccess(int userId, int startupId)
 		{
 			var user = await dbcontext.TeamMembers.Where(tm => tm.StartupId == startupId).SingleOrDefaultAsync(tm => tm.UserId == userId);

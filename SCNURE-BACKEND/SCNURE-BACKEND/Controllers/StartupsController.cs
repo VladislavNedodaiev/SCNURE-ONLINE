@@ -39,7 +39,9 @@ namespace SCNURE_BACKEND.Controllers
             try
             {
                 var remoteStartup = await startupService.GetStartupById(id);
-                var clientResult = remoteStartupMapper.MapRemoteStartup(remoteStartup);
+				int likesCount = remoteStartup.Likes.Where(l => l.Value == LikeType.Like).Count();
+				int dislikesCount = remoteStartup.Likes.Where(l => l.Value == LikeType.Dislike).Count();
+                var clientResult = remoteStartupMapper.MapRemoteStartup(remoteStartup, likesCount, dislikesCount);
                 return Ok(clientResult);
             }
             catch(Exception exception)
@@ -150,7 +152,7 @@ namespace SCNURE_BACKEND.Controllers
                 }
 
                 var remoteAddedStartup = await startupService.AddStartup(requestBody.Title, requestBody.Description, user);
-                var clientAddeedStartup = remoteStartupMapper.MapRemoteStartup(remoteAddedStartup);
+                var clientAddeedStartup = remoteStartupMapper.MapRemoteStartup(remoteAddedStartup, 0, 0);
                 return Ok(clientAddeedStartup);
             }
             catch (Exception exception)
@@ -210,7 +212,7 @@ namespace SCNURE_BACKEND.Controllers
                 }
 
                 var updatedStartup = await startupService.UpdateStartup(startup);
-                return Ok(remoteStartupMapper.MapRemoteStartup(updatedStartup));
+                return Ok(remoteStartupMapper.MapRemoteStartup(updatedStartup, 0, 0));
             }
             catch (Exception exception)
 			{

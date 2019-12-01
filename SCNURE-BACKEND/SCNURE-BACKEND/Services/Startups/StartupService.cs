@@ -36,9 +36,9 @@ namespace SCNURE_BACKEND.Services.Users
             dbContext = sCContext;
         }
 
-        public Task<Data.Entities.Startup> GetStartupById(int startupId)
+        public async Task<Data.Entities.Startup> GetStartupById(int startupId)
         {
-            return dbContext.Startups.FindAsync(startupId);
+            return await dbContext.Startups.Include(s => s.Likes).SingleOrDefaultAsync(s => s.StartupId == startupId);
         }
 
         public async Task<List<Data.Entities.Startup>> GetAllStartups()
@@ -74,7 +74,7 @@ namespace SCNURE_BACKEND.Services.Users
             return result;
         }
 
-        public async Task<List<Data.Entities.TeamMember>> GetTeamMembers(int startupId)
+        public async Task<List<TeamMember>> GetTeamMembers(int startupId)
         {
             return await dbContext
                 .TeamMembers

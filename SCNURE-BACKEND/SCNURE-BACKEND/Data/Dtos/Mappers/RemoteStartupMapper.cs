@@ -14,7 +14,7 @@ namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
 
         }
 
-        public StartupResponseDto MapRemoteStartup(Data.Entities.Startup remoteStartup)
+        public StartupResponseDto MapRemoteStartup(Data.Entities.Startup remoteStartup, int likesCount, int dislikeCount)
         {
             var result = new StartupResponseDto()
             {
@@ -26,14 +26,16 @@ namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
                 Description = remoteStartup.Description,
                 Website = remoteStartup.Website,
                 Phone = remoteStartup.Phone,
-                Email = remoteStartup.Email
+                Email = remoteStartup.Email,
+				LikesCount = likesCount,
+				DislikesCount = dislikeCount
             };
             return result;
         }
 
         public List<StartupResponseDto> MapRemoteStartups(IEnumerable<Entities.Startup> remoteStartups)
         {
-            return remoteStartups.Select(x => MapRemoteStartup(x)).ToList();
+            return remoteStartups.Select(x => MapRemoteStartup(x, 0, 0)).ToList();
         }
     }
 }
