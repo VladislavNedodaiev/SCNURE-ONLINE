@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using SCNURE_BACKEND.Data.Dtos;
 using SCNURE_BACKEND.Data.Dtos.Mappers;
+using SCNURE_BACKEND.Data.Dtos.Startups;
 using SCNURE_BACKEND.Data.Dtos.TeamMembers;
 using SCNURE_BACKEND.Data.Entities.ClientEntities.Startup;
 using SCNURE_BACKEND.Helpers;
@@ -15,7 +15,7 @@ using SCNURE_BACKEND.UseCases;
 
 namespace SCNURE_BACKEND.Controllers
 {
-    [Route("api/startups")]
+	[Route("api/startups")]
     [ApiController]
     public class StartupsController : ControllerBase
     {
@@ -90,6 +90,23 @@ namespace SCNURE_BACKEND.Controllers
 				var startups = await startupService.GetMyStartups(contextUserId);
 				var startupDtos = remoteStartupMapper.MapRemoteStartups(startups);
 				return Ok(startupDtos);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[Authorize]
+		[HttpPost("rate-startup")]
+		public async Task<IActionResult> RateStartup(RateStartupDto dto)
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+				await startupService.RateStartup(dto, contextUserId);
+				return Ok();
 			}
 			catch (Exception ex)
 			{
@@ -233,6 +250,23 @@ namespace SCNURE_BACKEND.Controllers
 					return BadRequest(new { message = "Current user can't add team members" });
 
 				await startupService.RemoveTeamMember(userId, startupId);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[Authorize]
+		[HttpDelete("remove-rate")]
+		public async Task<IActionResult> RemoveRate([Required]int startupId)
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+				await startupService.RemoveRate(startupId, contextUserId);
 				return Ok();
 			}
 			catch (Exception ex)

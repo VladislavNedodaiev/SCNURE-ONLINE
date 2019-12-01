@@ -1,4 +1,5 @@
 ﻿using SCNURE_BACKEND.Data.Dtos;
+using SCNURE_BACKEND.Data.Dtos.Startups;
 using System;
 using System.Collections.Generic;
 using System.Linq;

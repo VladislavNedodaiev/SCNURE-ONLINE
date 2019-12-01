@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SCNURE_BACKEND.Data.Dtos
+namespace SCNURE_BACKEND.Data.Dtos.Startups
 {
     public class StartupResponseDto
     {

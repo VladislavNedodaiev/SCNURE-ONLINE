@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SCNURE_BACKEND.Data;
+using SCNURE_BACKEND.Data.Dtos.Startups;
 using SCNURE_BACKEND.Data.Dtos.TeamMembers;
 using SCNURE_BACKEND.Data.Entities;
 using SCNURE_BACKEND.Helpers;
@@ -16,6 +17,8 @@ namespace SCNURE_BACKEND.Services.Users
         Task<Data.Entities.Startup> GetStartupById(int startupId);
         Task<List<Data.Entities.Startup>> GetAllStartups();
 		Task<List<Data.Entities.Startup>> GetMyStartups(int userId);
+		Task RateStartup(RateStartupDto rateStartupDtom, int userId);
+		Task RemoveRate(int startupId, int userId);
         Task<Data.Entities.Startup> AddStartup(string title, string description, User creator);
         Task<Data.Entities.Startup> UpdateStartup(Data.Entities.Startup startup);
         Task<List<TeamMember>> GetTeamMembers(int startupId);
@@ -26,32 +29,32 @@ namespace SCNURE_BACKEND.Services.Users
 
     public class StartupServiceImpl : IStartupService
     {
-        private readonly SCContext dbcontext;
+        private readonly SCContext dbContext;
 
         public StartupServiceImpl(SCContext sCContext)
         {
-            dbcontext = sCContext;
+            dbContext = sCContext;
         }
 
         public Task<Data.Entities.Startup> GetStartupById(int startupId)
         {
-            return dbcontext.Startups.FindAsync(startupId);
+            return dbContext.Startups.FindAsync(startupId);
         }
 
         public async Task<List<Data.Entities.Startup>> GetAllStartups()
         {
-            return await dbcontext.Startups.AsQueryable().ToListAsync();
+            return await dbContext.Startups.AsQueryable().ToListAsync();
         }
 
-        public async Task<Data.Entities.Startup> AddStartup(string title, string description, Data.Entities.User creator)
+        public async Task<Data.Entities.Startup> AddStartup(string title, string description, User creator)
         {
-            dbcontext.Users.Update(creator);
+            dbContext.Users.Update(creator);
             var dbStartup = new Data.Entities.Startup()
             {
                 Title = title,
                 Description = description
             };
-            var addedStartup = dbcontext.Startups.Add(dbStartup).Entity;
+            var addedStartup = dbContext.Startups.Add(dbStartup).Entity;
             var dbTeamMember = new Data.Entities.TeamMember()
             {
                 StartupId = addedStartup.StartupId,
@@ -59,21 +62,21 @@ namespace SCNURE_BACKEND.Services.Users
                 Role = "",
                 EditAccess = true
             };
-            dbcontext.TeamMembers.Add(dbTeamMember);
-            await dbcontext.SaveChangesAsync();
-            return dbcontext.Startups.Find(addedStartup.StartupId);
+            dbContext.TeamMembers.Add(dbTeamMember);
+            await dbContext.SaveChangesAsync();
+            return dbContext.Startups.Find(addedStartup.StartupId);
         }
 
         public async Task<Data.Entities.Startup> UpdateStartup(Data.Entities.Startup startup)
         {
-            var result = dbcontext.Startups.Update(startup).Entity;
-            await dbcontext.SaveChangesAsync();
+            var result = dbContext.Startups.Update(startup).Entity;
+            await dbContext.SaveChangesAsync();
             return result;
         }
 
         public async Task<List<Data.Entities.TeamMember>> GetTeamMembers(int startupId)
         {
-            return await dbcontext
+            return await dbContext
                 .TeamMembers
                 .AsQueryable()
                 .Where(
@@ -98,12 +101,12 @@ namespace SCNURE_BACKEND.Services.Users
 
             userAsTeamMember.Role = editTeamMemberRequest.Role;
             userAsTeamMember.EditAccess = editTeamMemberRequest.HasEditAccess;
-            dbcontext.SaveChanges();
+            dbContext.SaveChanges();
         }
 
 		public async Task AddTeamMember(AddTeamMemberRequest addTeamMemberRequest)
 		{
-			var user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Login == addTeamMemberRequest.Login);
+			var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Login == addTeamMemberRequest.Login);
 			if (user == null)
 				throw new ArgumentException("User was not found");
 
@@ -115,32 +118,69 @@ namespace SCNURE_BACKEND.Services.Users
 				UserId = user.UserId
 			};
 
-			await dbcontext.TeamMembers.AddAsync(teamMember);
-			await dbcontext.SaveChangesAsync();
+			await dbContext.TeamMembers.AddAsync(teamMember);
+			await dbContext.SaveChangesAsync();
 		}
 
 		public async Task RemoveTeamMember(int userId, int startupId)
 		{
-			var user = await dbcontext.Users.SingleOrDefaultAsync(u => u.UserId == userId);
+			var user = await dbContext.Users.SingleOrDefaultAsync(u => u.UserId == userId);
 			if (user == null)
 				throw new ArgumentException("User was not found");
 
-			var teamMember = await dbcontext.TeamMembers.FindAsync(startupId, userId);
+			var teamMember = await dbContext.TeamMembers.FindAsync(startupId, userId);
 
-			dbcontext.TeamMembers.Remove(teamMember);
-			await dbcontext.SaveChangesAsync();
+			dbContext.TeamMembers.Remove(teamMember);
+			await dbContext.SaveChangesAsync();
 		}
 
 		public async Task<List<Data.Entities.Startup>> GetMyStartups(int userId)
 		{
-			var user = await dbcontext.Users.FindAsync(userId);
+			var user = await dbContext.Users.FindAsync(userId);
 			if (user == null)
 				throw new ArgumentException("User wasn't found");
 
-			return await dbcontext.Startups
+			return await dbContext.Startups
 				.Include(s => s.TeamMembers)
 				.Where(s => s.TeamMembers.Any(tm => tm.UserId == userId))
 				.ToListAsync();
+		}
+
+		public async Task RateStartup(RateStartupDto rateStartupDto, int userId)
+		{
+			var user = await dbContext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			var startup = await dbContext.Startups.FindAsync(rateStartupDto.StartupId);
+			if (startup == null)
+				throw new ArgumentException("Startup wasn't found");
+
+			var like = new Like
+			{
+				StartupId = startup.StartupId,
+				UserId = user.UserId,
+				Value = rateStartupDto.IsRatePositive ? LikeType.Like : LikeType.Dislike
+			};
+
+			await dbContext.Likes.AddAsync(like);
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task RemoveRate(int startupId, int userId)
+		{
+			var user = await dbContext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			var startup = await dbContext.Startups.FindAsync(startupId);
+			if (startup == null)
+				throw new ArgumentException("Startup wasn't found");
+
+			var like = await dbContext.Likes.SingleOrDefaultAsync(l => l.StartupId == startupId && l.UserId == userId);
+
+			dbContext.Likes.Remove(like);
+			await dbContext.SaveChangesAsync();
 		}
 	}
 }
