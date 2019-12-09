@@ -160,6 +160,10 @@ namespace SCNURE_BACKEND.Services.Users
 			if (startup == null)
 				throw new ArgumentException("Startup wasn't found");
 
+			var isLikeExits = await dbContext.Likes.AnyAsync(l => l.UserId == userId && l.StartupId == l.StartupId);
+			if (isLikeExits)
+				throw new ArgumentException("You already rated this startup");
+
 			var like = new Like
 			{
 				StartupId = startup.StartupId,
