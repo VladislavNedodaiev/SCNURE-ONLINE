@@ -15,7 +15,7 @@ namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
 
         }
 
-        public StartupResponseDto MapRemoteStartup(Data.Entities.Startup remoteStartup, int likesCount, int dislikeCount)
+        public StartupResponseDto MapRemoteStartup(Data.Entities.Startup remoteStartup, int likesCount, int dislikeCount, int currentUserRate)
         {
             var result = new StartupResponseDto()
             {
@@ -29,7 +29,8 @@ namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
                 Phone = remoteStartup.Phone,
                 Email = remoteStartup.Email,
 				LikesCount = likesCount,
-				DislikesCount = dislikeCount
+				DislikesCount = dislikeCount,
+				CurrentUserRate = currentUserRate
             };
             return result;
         }
@@ -40,7 +41,7 @@ namespace SCNURE_BACKEND.Data.Entities.ClientEntities.Startup
 			{
 				int likesCount = x.Likes.Where(l => l.Value == LikeType.Like).Count();
 				int dislikesCount = x.Likes.Where(l => l.Value == LikeType.Dislike).Count();
-				return MapRemoteStartup(x, likesCount, dislikesCount);
+				return MapRemoteStartup(x, likesCount, dislikesCount, 0);
 			})
 			.ToList();
         }

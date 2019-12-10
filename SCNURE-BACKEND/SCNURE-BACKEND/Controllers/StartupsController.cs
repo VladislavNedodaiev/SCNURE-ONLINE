@@ -38,11 +38,24 @@ namespace SCNURE_BACKEND.Controllers
         {
             try
             {
+
                 var remoteStartup = await startupService.GetStartupById(id);
 				int likesCount = remoteStartup.Likes.Where(l => l.Value == LikeType.Like).Count();
 				int dislikesCount = remoteStartup.Likes.Where(l => l.Value == LikeType.Dislike).Count();
-                var clientResult = remoteStartupMapper.MapRemoteStartup(remoteStartup, likesCount, dislikesCount);
-                return Ok(clientResult);
+
+				int currentUserLikeInt = LikeType.NoRateInt;
+
+				if (HttpContext.User.Identity.Name != null)
+				{
+					int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+					var currentUserLike = remoteStartup.Likes.SingleOrDefault(l => l.StartupId == remoteStartup.StartupId && l.UserId == contextUserId);
+					currentUserLikeInt = currentUserLike == null ? LikeType.NoRateInt : (currentUserLike.Value == LikeType.Like ? LikeType.LikeInt : LikeType.DislikeInt);
+				}
+
+				var clientResult = remoteStartupMapper.MapRemoteStartup(remoteStartup, likesCount, dislikesCount, currentUserLikeInt);
+
+				return Ok(clientResult);
             }
             catch(Exception exception)
 			{
@@ -152,7 +165,7 @@ namespace SCNURE_BACKEND.Controllers
                 }
 
                 var remoteAddedStartup = await startupService.AddStartup(requestBody.Title, requestBody.Description, user);
-                var clientAddeedStartup = remoteStartupMapper.MapRemoteStartup(remoteAddedStartup, 0, 0);
+                var clientAddeedStartup = remoteStartupMapper.MapRemoteStartup(remoteAddedStartup, 0, 0, 0);
                 return Ok(clientAddeedStartup);
             }
             catch (Exception exception)
@@ -212,7 +225,7 @@ namespace SCNURE_BACKEND.Controllers
                 }
 
                 var updatedStartup = await startupService.UpdateStartup(startup);
-                return Ok(remoteStartupMapper.MapRemoteStartup(updatedStartup, 0, 0));
+                return Ok(remoteStartupMapper.MapRemoteStartup(updatedStartup, 0, 0, 0));
             }
             catch (Exception exception)
 			{

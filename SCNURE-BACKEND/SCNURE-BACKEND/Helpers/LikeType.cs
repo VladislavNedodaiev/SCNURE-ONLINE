@@ -9,5 +9,9 @@ namespace SCNURE_BACKEND.Helpers
 	{
 		public const string Like = "1";
 		public const string Dislike = "-1";
+
+		public const int NoRateInt = 0;
+		public const int LikeInt = 1;
+		public const int DislikeInt = -1;
 	}
 }

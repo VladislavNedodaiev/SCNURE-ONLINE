@@ -22,5 +22,6 @@ namespace SCNURE_BACKEND.Data.Dtos.Startups
         public string Email { get; set; }
 		public int LikesCount { get; set; }
 		public int DislikesCount { get; set; }
+		public int CurrentUserRate { get; set; }
     }
 }
