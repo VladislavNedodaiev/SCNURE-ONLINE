@@ -160,19 +160,32 @@ namespace SCNURE_BACKEND.Services.Users
 			if (startup == null)
 				throw new ArgumentException("Startup wasn't found");
 
-			var isLikeExits = await dbContext.Likes.AnyAsync(l => l.UserId == userId && l.StartupId == l.StartupId);
-			if (isLikeExits)
-				throw new ArgumentException("You already rated this startup");
+			string newRateValue = rateStartupDto.IsRatePositive ? LikeType.Like : LikeType.Dislike;
+			var rate = await dbContext.Likes.SingleOrDefaultAsync(l => l.UserId == userId && l.StartupId == startup.StartupId);
+			
+			if (rate != null && rate.Value == newRateValue)
+				throw new ArgumentException("You have already rated this startup");
 
-			var like = new Like
+			if (rate != null)
 			{
-				StartupId = startup.StartupId,
-				UserId = user.UserId,
-				Value = rateStartupDto.IsRatePositive ? LikeType.Like : LikeType.Dislike
-			};
+				rate.Value = newRateValue;
 
-			await dbContext.Likes.AddAsync(like);
-			await dbContext.SaveChangesAsync();
+				dbContext.Update(rate);
+				await dbContext.SaveChangesAsync();
+			}
+			else
+			{
+
+				var like = new Like
+				{
+					StartupId = startup.StartupId,
+					UserId = user.UserId,
+					Value = newRateValue
+				};
+
+				await dbContext.Likes.AddAsync(like);
+				await dbContext.SaveChangesAsync();
+			}
 		}
 
 		public async Task RemoveRate(int startupId, int userId)
