@@ -1,4 +1,5 @@
-﻿using SCNURE_BACKEND.Data.Dtos.Users;
+﻿using SCNURE_BACKEND.Data.Dtos.Comments;
+using SCNURE_BACKEND.Data.Dtos.Users;
 using SCNURE_BACKEND.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -68,6 +69,18 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 			user.ShowEmail = userData.ShowEmail;
 			user.ShowPhone = userData.ShowPhone;
 			user.Gender = userData.Gender;
+		}
+
+		public static UserInfo ToUserInfoResponse(this User user)
+		{
+			return new UserInfo()
+			{
+				UserId = user.UserId,
+				FirstName = user.FirstName,
+				SecondName = user.SecondName,
+				Photo = user.Photo,
+				Description = user.Description
+			};
 		}
 	}
 }

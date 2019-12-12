@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SCNURE_BACKEND.Data;
+using SCNURE_BACKEND.Data.Dtos.Comments;
+using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Startups;
 using SCNURE_BACKEND.Data.Dtos.TeamMembers;
 using SCNURE_BACKEND.Data.Entities;
@@ -25,6 +27,7 @@ namespace SCNURE_BACKEND.Services.Users
         Task EditTeamMember(EditTeamMemberRequest editTeamMemberRequest, User editor);
 		Task AddTeamMember(AddTeamMemberRequest addTeamMemberRequest);
 		Task RemoveTeamMember(int userId, int startupId);
+		Task<ResponseComment> AddComment(int startupId, int userId, string text);
 	}
 
     public class StartupServiceImpl : IStartupService
@@ -202,6 +205,28 @@ namespace SCNURE_BACKEND.Services.Users
 
 			dbContext.Likes.Remove(like);
 			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<ResponseComment> AddComment(int startupId, int userId, string text)
+		{
+			var user = await dbContext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			var startup = await dbContext.Startups.FindAsync(startupId);
+			if (startup == null)
+				throw new ArgumentException("Startup wasn't found");
+
+			var dbComment = new Comment()
+			{
+				UserId = userId,
+				StartupId = startupId,
+				Text = text,
+			};
+
+			dbContext.Comments.Add(dbComment);
+
+			return new ResponseComment(user, dbComment);
 		}
 	}
 }
