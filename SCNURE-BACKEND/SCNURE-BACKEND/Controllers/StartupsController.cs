@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SCNURE_BACKEND.Data.Dtos.Comments;
 using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Startups;
 using SCNURE_BACKEND.Data.Dtos.TeamMembers;
@@ -289,5 +290,21 @@ namespace SCNURE_BACKEND.Controllers
 				return BadRequest(new { message = ex.Message });
 			}
 		}
+
+        [Authorize]
+        [HttpPut("add-comment")]
+        public async Task<IActionResult> AddComment([Required] int startupId, [Required] string text) 
+        {
+            try
+            {
+                int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+                var response = await startupService.AddComment(startupId, contextUserId, text);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        } 
 	}
 }
