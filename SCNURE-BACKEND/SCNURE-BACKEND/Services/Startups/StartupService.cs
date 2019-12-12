@@ -28,6 +28,7 @@ namespace SCNURE_BACKEND.Services.Users
 		Task AddTeamMember(AddTeamMemberRequest addTeamMemberRequest);
 		Task RemoveTeamMember(int userId, int startupId);
 		Task<ResponseComment> AddComment(int startupId, int userId, string text);
+		Task<List<ResponseComment>> GetAllComments(int startupId);
 	}
 
     public class StartupServiceImpl : IStartupService
@@ -224,9 +225,22 @@ namespace SCNURE_BACKEND.Services.Users
 				Text = text,
 			};
 
-			dbContext.Comments.Add(dbComment);
+			await dbContext.Comments.AddAsync(dbComment);
+			await dbContext.SaveChangesAsync();
 
-			return new ResponseComment(user, dbComment);
+			return new ResponseComment(dbComment);
+		}
+
+		public async Task<List<ResponseComment>> GetAllComments(int startupId)
+		{
+			var startup = await dbContext.Startups.FindAsync(startupId);
+			if (startup == null)
+				throw new ArgumentException("Startup wasn't found");
+			var dbComments = await dbContext
+				.Comments
+				.Where(comment => comment.StartupId == startupId)
+				.ToListAsync();
+			return dbComments.Select(dbComment => new ResponseComment(dbComment)).ToList();
 		}
 	}
 }
