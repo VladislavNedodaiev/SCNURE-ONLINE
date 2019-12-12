@@ -228,7 +228,7 @@ namespace SCNURE_BACKEND.Services.Users
 			await dbContext.Comments.AddAsync(dbComment);
 			await dbContext.SaveChangesAsync();
 
-			return new ResponseComment(dbComment);
+			return new ResponseComment(user, dbComment);
 		}
 
 		public async Task<List<ResponseComment>> GetAllComments(int startupId)
@@ -240,7 +240,18 @@ namespace SCNURE_BACKEND.Services.Users
 				.Comments
 				.Where(comment => comment.StartupId == startupId)
 				.ToListAsync();
-			return dbComments.Select(dbComment => new ResponseComment(dbComment)).ToList();
+			var tasksList = dbComments.Select(async dbComment => new ResponseComment(await GetCommentAuthor(dbComment), dbComment));
+			var formatted = await Task.WhenAll(tasksList);
+			return formatted.ToList();
+		}
+
+		private Task<User> GetCommentAuthor(Comment comment)
+		{
+			if (comment.User != null)
+			{
+				return Task.FromResult(comment.User);
+			}
+			return dbContext.Users.FindAsync(comment.UserId);
 		}
 	}
 }
