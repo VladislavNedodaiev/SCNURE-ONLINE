@@ -29,6 +29,7 @@ namespace SCNURE_BACKEND.Services.Users
 		Task RemoveTeamMember(int userId, int startupId);
 		Task<ResponseComment> AddComment(int startupId, int userId, string text);
 		Task<List<ResponseComment>> GetAllComments(int startupId);
+		Task RemoveComment(int userId, int commentId);
 	}
 
     public class StartupServiceImpl : IStartupService
@@ -252,6 +253,23 @@ namespace SCNURE_BACKEND.Services.Users
 				return Task.FromResult(comment.User);
 			}
 			return dbContext.Users.FindAsync(comment.UserId);
+		}
+
+		public async Task RemoveComment(int userId, int commentId)
+		{
+			var user = await dbContext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			var comment = await dbContext.Comments.FindAsync(commentId);
+			if (comment == null)
+				throw new ArgumentException("Comment wasn't found");
+
+			if (!user.Admin && userId != comment.UserId)
+				throw new ArgumentException("Permission denied");
+
+			dbContext.Comments.Remove(comment);
+			await dbContext.SaveChangesAsync();
 		}
 	}
 }

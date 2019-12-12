@@ -321,5 +321,21 @@ namespace SCNURE_BACKEND.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [Authorize]
+        [HttpDelete("remove-comment")]
+        public async Task<IActionResult> RemoveComment([Required] int commentId)
+        {
+            try
+            {
+                int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+                await startupService.RemoveComment(contextUserId, commentId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 	}
 }
