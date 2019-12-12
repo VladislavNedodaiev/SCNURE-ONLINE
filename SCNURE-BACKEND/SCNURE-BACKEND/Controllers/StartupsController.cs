@@ -305,6 +305,21 @@ namespace SCNURE_BACKEND.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-        } 
+        }
+
+        [AllowAnonymous]
+        [HttpGet("comments-for-startup")]
+        public async Task<IActionResult> GetCommentsForStartup([Required] int startupId)
+        {
+            try
+            {
+                var response = await startupService.GetAllComments(startupId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 	}
 }
