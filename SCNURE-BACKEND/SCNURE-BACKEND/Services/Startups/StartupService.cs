@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SCNURE_BACKEND.Data;
+using SCNURE_BACKEND.Data.Dtos.Canvases;
 using SCNURE_BACKEND.Data.Dtos.Comments;
 using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Startups;
@@ -23,6 +24,7 @@ namespace SCNURE_BACKEND.Services.Users
 		Task RemoveRate(int startupId, int userId);
         Task<Data.Entities.Startup> AddStartup(string title, string description, User creator);
         Task<Data.Entities.Startup> UpdateStartup(Data.Entities.Startup startup);
+		Task<CanvaseDto> UpdateCanvase(CanvaseUpdateDto dto);
         Task<List<TeamMember>> GetTeamMembers(int startupId);
         Task EditTeamMember(EditTeamMemberRequest editTeamMemberRequest, User editor);
 		Task AddTeamMember(AddTeamMemberRequest addTeamMemberRequest);
@@ -71,6 +73,7 @@ namespace SCNURE_BACKEND.Services.Users
                 EditAccess = true
             };
             dbContext.TeamMembers.Add(dbTeamMember);
+			dbContext.Canvases.Add(new Canvase { StartupId = addedStartup.StartupId });
             await dbContext.SaveChangesAsync();
             return dbContext.Startups.Find(addedStartup.StartupId);
         }
@@ -81,6 +84,18 @@ namespace SCNURE_BACKEND.Services.Users
             await dbContext.SaveChangesAsync();
             return result;
         }
+
+		public async Task<CanvaseDto> UpdateCanvase(CanvaseUpdateDto dto)
+		{
+			var canvase = await dbContext.Canvases.FindAsync(dto.StartupId);
+			if (canvase == null)
+				throw new ArgumentException("Canvase wasn't found");
+
+			canvase.UpdateCanvaseFromDto(dto);
+			var result = dbContext.Canvases.Update(canvase).Entity;
+			await dbContext.SaveChangesAsync();
+			return result.ToDto();
+		}
 
         public async Task<List<TeamMember>> GetTeamMembers(int startupId)
         {
