@@ -65,6 +65,22 @@ namespace SCNURE_BACKEND.Controllers
 			}
         }
 
+		[AllowAnonymous]
+		[HttpGet("canvase")]
+		public async Task<IActionResult> GetCanvaseAsync([Required]int startupId)
+		{
+			try
+			{
+				var canvase = await startupService.GetCanvaseById(startupId);
+
+				return Ok(canvase);
+			}
+			catch (Exception exception)
+			{
+				return BadRequest(new { message = exception.Message });
+			}
+		}
+
         [AllowAnonymous]
         [HttpGet("team-members")]
         public async Task<IActionResult> GetStartupTeamMembers([Required]int startupId)

@@ -18,7 +18,8 @@ namespace SCNURE_BACKEND.Services.Users
     public interface IStartupService
     {
         Task<Data.Entities.Startup> GetStartupById(int startupId);
-        Task<List<Data.Entities.Startup>> GetAllStartups();
+		Task<CanvaseDto> GetCanvaseById(int startupId);
+		Task<List<Data.Entities.Startup>> GetAllStartups();
 		Task<List<Data.Entities.Startup>> GetMyStartups(int userId);
 		Task RateStartup(RateStartupDto rateStartupDtom, int userId);
 		Task RemoveRate(int startupId, int userId);
@@ -47,6 +48,12 @@ namespace SCNURE_BACKEND.Services.Users
         {
             return await dbContext.Startups.Include(s => s.Likes).SingleOrDefaultAsync(s => s.StartupId == startupId);
         }
+
+		public async Task<CanvaseDto> GetCanvaseById(int startupId)
+		{
+			var canvase = await dbContext.Canvases.FindAsync(startupId);
+			return canvase.ToDto();
+		}
 
         public async Task<List<Data.Entities.Startup>> GetAllStartups()
         {
