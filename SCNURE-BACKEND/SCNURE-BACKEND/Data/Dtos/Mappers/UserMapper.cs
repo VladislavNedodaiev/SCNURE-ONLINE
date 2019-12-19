@@ -78,6 +78,7 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 				UserId = user.UserId,
 				FirstName = user.FirstName,
 				SecondName = user.SecondName,
+				Login = user.Login,
 				Photo = user.Photo,
 				Description = user.Description
 			};

@@ -9,6 +9,7 @@ using SCNURE_BACKEND.Data.Dtos.Comments;
 using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Startups;
 using SCNURE_BACKEND.Data.Dtos.TeamMembers;
+using SCNURE_BACKEND.Data.Entities;
 using SCNURE_BACKEND.Data.Entities.ClientEntities.Startup;
 using SCNURE_BACKEND.Helpers;
 using SCNURE_BACKEND.Services.Users;
@@ -260,10 +261,10 @@ namespace SCNURE_BACKEND.Controllers
 			try
 			{
 				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
-
-				var user = await userService.GetByIdAsync(contextUserId);
-				if (!await userService.HasEditAccess(user.UserId, startupId))
-					return BadRequest(new { message = "Current user can't add team members" });
+                User contextUser = await userService.GetByIdAsync(contextUserId);
+                bool hasEditAccess = await userService.HasEditAccess(contextUserId, startupId);
+                if (!contextUser.Admin && contextUserId != userId && !hasEditAccess)
+					return BadRequest(new { message = "Current user can't remove team members" });
 
 				await startupService.RemoveTeamMember(userId, startupId);
 				return Ok();
