@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SCNURE_BACKEND.Data.Dtos.Canvases;
 using SCNURE_BACKEND.Data.Dtos.Comments;
 using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Startups;
@@ -64,6 +65,22 @@ namespace SCNURE_BACKEND.Controllers
 				return BadRequest(new { message = exception.Message });
 			}
         }
+
+		[AllowAnonymous]
+		[HttpGet("canvase")]
+		public async Task<IActionResult> GetCanvaseAsync([Required]int startupId)
+		{
+			try
+			{
+				var canvase = await startupService.GetCanvaseById(startupId);
+
+				return Ok(canvase);
+			}
+			catch (Exception exception)
+			{
+				return BadRequest(new { message = exception.Message });
+			}
+		}
 
         [AllowAnonymous]
         [HttpGet("team-members")]
@@ -234,6 +251,32 @@ namespace SCNURE_BACKEND.Controllers
 				return BadRequest(new { message = exception.Message });
 			}
         }
+
+		[Authorize]
+		[HttpPost("update-canvase")]
+		public async Task<IActionResult> UpdateCanvase(CanvaseUpdateDto dto)
+		{
+			try
+			{
+				var userId = int.Parse(HttpContext.User.Identity.Name);
+				var user = await userService.GetByIdAsync(userId);
+				var startup = await startupService.GetStartupById(dto.StartupId);
+
+				if (user == null || startup == null)
+					return NotFound();
+				var teamMembers = await startupService.GetTeamMembers(startup.StartupId);
+				var userAsTeamMember = teamMembers.FirstOrDefault(x => x.UserId == user.UserId);
+				if (userAsTeamMember == null || !userAsTeamMember.EditAccess)
+					return BadRequest("NO_EDIT_ACCESS");
+
+				var updatedCanvase = await startupService.UpdateCanvase(dto);
+				return Ok(updatedCanvase);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
 
         [Authorize]
         [HttpPost("edit-team-member")]
