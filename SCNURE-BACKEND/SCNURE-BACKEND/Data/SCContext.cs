@@ -459,10 +459,9 @@ namespace SCNURE_BACKEND.Data
                     .HasColumnName("login")
                     .HasColumnType("varchar(32)");
 
-                entity.Property(e => e.Membership)
-                    .HasColumnName("membership")
-                    //.HasColumnType("tinyint(1)")
-                    .HasDefaultValueSql("'0'");
+				entity.Property(e => e.Membership)
+					.HasColumnName("membership")
+					.HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.PasswordHash)
                     .IsRequired()

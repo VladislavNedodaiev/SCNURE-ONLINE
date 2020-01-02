@@ -220,7 +220,7 @@ namespace SCNURE_BACKEND.Controllers
 				if (contextUserId == 0)
 					return BadRequest(new { message = "Unathorized" });
 
-				await userService.SetMembership(contextUserId);
+				await userService.RequestMembership(contextUserId);
 
 				return Ok();
 			}

@@ -24,7 +24,7 @@ namespace SCNURE_BACKEND.Data.Dtos.Users
 		public string Email { get; set; }
 		public bool ShowEmail { get; set; }
 		public bool Admin { get; set; }
-		public bool Membership { get; set; }
+		public byte Membership { get; set; }
 		public bool Ban { get; set; }
 	}
 }

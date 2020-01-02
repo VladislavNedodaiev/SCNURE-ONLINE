@@ -183,7 +183,7 @@ namespace SCNURE_BACKEND.Controllers
                 var userId = int.Parse(HttpContext.User.Identity.Name);
                 var user = await userService.GetByIdAsync(userId);
 
-                if (!user.Membership)
+                if (user.Membership != 1)
                 {
                     return BadRequest("NOT_MEMBER");
                 }

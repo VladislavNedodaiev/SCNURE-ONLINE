@@ -21,9 +21,11 @@ namespace SCNURE_BACKEND.Services.Users
         Task<bool> HasEditAccess(int userId, int startupId);
 		Task<bool> IsUserAdmin(int userId);
 		Task<IEnumerable<UserProfileResponse>> GetAllUsers();
+		Task<IEnumerable<UserProfileResponse>> GetMembershipRequests();
 		Task BanUser(int userId);
 		Task SetMembership(int userId);
 		Task RemoveMembership(int userId);
 		Task UpdatePhotoPath(string path, int userId);
+		Task RequestMembership(int userId);
 	}
 }

@@ -42,6 +42,27 @@ namespace SCNURE_BACKEND.Controllers
 			}
 		}
 
+		[HttpGet("membership-requests")]
+		public async Task<IActionResult> GetAllMembershipRequests()
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+				if (contextUserId == 0)
+					return BadRequest(new { message = "Unathorized" });
+
+				bool isContextUserAdmin = await usersService.IsUserAdmin(contextUserId);
+				if (!isContextUserAdmin)
+					return BadRequest(new { message = "Current user isn't admin" });
+
+				return Ok(await usersService.GetMembershipRequests());
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
 		[HttpPost("ban")]
 		public async Task<IActionResult> BanUser(BanUserRequest dto)
 		{

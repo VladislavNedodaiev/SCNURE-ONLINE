@@ -200,6 +200,11 @@ namespace SCNURE_BACKEND.Services.Users
 			return await dbcontext.Users.Select(u => u.ToUserProfileResponse()).ToListAsync();
 		}
 
+		public async Task<IEnumerable<UserProfileResponse>> GetMembershipRequests()
+		{
+			return await dbcontext.Users.Where(u => u.Membership == 2).Select(u => u.ToUserProfileResponse()).ToListAsync();
+		}
+
 		public async Task BanUser(int userId)
 		{
 			var user = await dbcontext.Users.FindAsync(userId);
@@ -212,13 +217,25 @@ namespace SCNURE_BACKEND.Services.Users
 			await dbcontext.SaveChangesAsync();
 		}
 
+		public async Task RequestMembership(int userId)
+		{
+			var user = await dbcontext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			user.Membership = 2;
+
+			dbcontext.Entry(user).State = EntityState.Modified;
+			await dbcontext.SaveChangesAsync();
+		}
+
 		public async Task SetMembership(int userId)
 		{
 			var user = await dbcontext.Users.FindAsync(userId);
 			if (user == null)
 				throw new ArgumentException("User wasn't found");
 
-			user.Membership = true;
+			user.Membership = 1;
 
 			dbcontext.Entry(user).State = EntityState.Modified;
 			await dbcontext.SaveChangesAsync();
@@ -230,7 +247,7 @@ namespace SCNURE_BACKEND.Services.Users
 			if (user == null)
 				throw new ArgumentException("User wasn't found");
 
-			user.Membership = false;
+			user.Membership = 0;
 
 			dbcontext.Entry(user).State = EntityState.Modified;
 			await dbcontext.SaveChangesAsync();
