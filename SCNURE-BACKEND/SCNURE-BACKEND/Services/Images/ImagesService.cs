@@ -32,7 +32,7 @@ namespace SCNURE_BACKEND.Services.Images
 				Directory.CreateDirectory(filePath);
 			}
 
-			string uniqueFileName = $"user_{startupId}_pic.png";
+			string uniqueFileName = $"startups_{startupId}_pic.png";
 			string dbPath = Path.Combine(folderName, uniqueFileName);
 
 			await startupService.UpdatePhotoPath(dbPath, startupId);
