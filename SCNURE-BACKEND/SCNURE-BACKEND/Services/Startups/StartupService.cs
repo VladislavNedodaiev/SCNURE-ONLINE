@@ -33,6 +33,7 @@ namespace SCNURE_BACKEND.Services.Users
 		Task<ResponseComment> AddComment(int startupId, int userId, string text);
 		Task<List<ResponseComment>> GetAllComments(int startupId);
 		Task RemoveComment(int userId, int commentId);
+		Task UpdatePhotoPath(string path, int userId);
 	}
 
     public class StartupServiceImpl : IStartupService
@@ -291,6 +292,18 @@ namespace SCNURE_BACKEND.Services.Users
 				throw new ArgumentException("Permission denied");
 
 			dbContext.Comments.Remove(comment);
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task UpdatePhotoPath(string path, int startupId)
+		{
+			var startup = await dbContext.Startups.FindAsync(startupId);
+			if (startup == null)
+				throw new ArgumentException("Startup wasn't found");
+
+			startup.Photo = path;
+
+			dbContext.Entry(startup).State = EntityState.Modified;
 			await dbContext.SaveChangesAsync();
 		}
 	}

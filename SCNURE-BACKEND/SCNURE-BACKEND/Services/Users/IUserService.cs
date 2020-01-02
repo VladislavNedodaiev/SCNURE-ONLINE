@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SCNURE_BACKEND.Data.Dtos;
 using SCNURE_BACKEND.Data.Dtos.TeamMembers;
 using SCNURE_BACKEND.Data.Dtos.Users;
@@ -18,5 +19,11 @@ namespace SCNURE_BACKEND.Services.Users
 		Task<UserDataResponse> GetAccountData(int userId);
 		Task UpdateUser(EditUserDataRequest user, int userId);
         Task<bool> HasEditAccess(int userId, int startupId);
-    }
+		Task<bool> IsUserAdmin(int userId);
+		Task<IEnumerable<UserProfileResponse>> GetAllUsers();
+		Task BanUser(int userId);
+		Task SetMembership(int userId);
+		Task RemoveMembership(int userId);
+		Task UpdatePhotoPath(string path, int userId);
+	}
 }

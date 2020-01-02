@@ -63,7 +63,6 @@ namespace SCNURE_BACKEND.Data.Dtos.Mappers
 			user.FirstName = userData.FirstName;
 			user.Login = userData.Login;
 			user.Phone = userData.Phone;
-			user.Photo = userData.Photo;
 			user.SecondName = userData.SecondName;
 			user.ShowBirthday = userData.ShowBirthday;
 			user.ShowEmail = userData.ShowEmail;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Users;
 using SCNURE_BACKEND.Helpers;
 using SCNURE_BACKEND.Services.Email;
+using SCNURE_BACKEND.Services.Images;
 using SCNURE_BACKEND.Services.Users;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -24,14 +26,16 @@ namespace SCNURE_BACKEND.Controllers
         private readonly IUserService userService;
         private readonly JwtSettings jwtSettings;
 		private readonly IEmailService emailService;
+		private readonly IImagesService imagesService;
 
-        public AccountsController(IUserService userService, IOptions<JwtSettings> jwtSettings,
-			IEmailService emailService)
+		public AccountsController(IUserService userService, IOptions<JwtSettings> jwtSettings,
+			IEmailService emailService, IImagesService imagesService)
         {
             this.userService = userService;
             this.jwtSettings = jwtSettings.Value;
 			this.emailService = emailService;
-        }
+			this.imagesService = imagesService;
+		}
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -205,5 +209,42 @@ namespace SCNURE_BACKEND.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-    }
+
+		[Authorize]
+		[HttpPost("membership")]
+		public async Task<IActionResult> RequestMembership()
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+				if (contextUserId == 0)
+					return BadRequest(new { message = "Unathorized" });
+
+				await userService.SetMembership(contextUserId);
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[HttpPost("upload-user-photo")]
+		public async Task<IActionResult> UploadUserPicture(IFormFile file)
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+				var path = await imagesService.UploadUserPicture(file, contextUserId);
+
+				return Ok(path);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+	}
 }

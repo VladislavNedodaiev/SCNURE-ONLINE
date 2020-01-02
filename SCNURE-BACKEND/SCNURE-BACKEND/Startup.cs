@@ -1,18 +1,22 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using SCNURE_BACKEND.Data;
 using SCNURE_BACKEND.Helpers;
 using SCNURE_BACKEND.Services.Email;
+using SCNURE_BACKEND.Services.Images;
 using SCNURE_BACKEND.Services.Users;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,6 +38,7 @@ namespace SCNURE_BACKEND
             services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IEmailService, SmtpService>();
             services.AddScoped<IStartupService, StartupServiceImpl>();
+			services.AddScoped<IImagesService, ImagesService>();
 
 
 			services.AddDbContext<SCContext>(options => options.UseMySql(Configuration.GetConnectionString("MainMySqlConn")));
@@ -72,7 +77,13 @@ namespace SCNURE_BACKEND
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+			app.UseStaticFiles(new StaticFileOptions()
+			{
+				FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+				RequestPath = new PathString("/Resources")
+			});
+
+			app.UseHttpsRedirection();
 
             app.UseCors(builder => builder
                 .AllowAnyOrigin()
@@ -84,7 +95,8 @@ namespace SCNURE_BACKEND
 
 			app.UseMvc();
 
-            app.UseSwagger();
+
+			app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SCNURE-BACKEND");

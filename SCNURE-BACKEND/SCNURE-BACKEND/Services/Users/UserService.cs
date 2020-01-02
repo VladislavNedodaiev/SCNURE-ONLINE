@@ -14,6 +14,7 @@ using SCNURE_BACKEND.Data.Dtos.Mappers;
 using SCNURE_BACKEND.Data.Dtos.Users;
 using SCNURE_BACKEND.Data.Dtos.TeamMembers;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace SCNURE_BACKEND.Services.Users
 {
@@ -183,6 +184,68 @@ namespace SCNURE_BACKEND.Services.Users
 			if (user == null)
 				return false;
 			return user.EditAccess;
+		}
+
+		public async Task<bool> IsUserAdmin(int userId)
+		{
+			var user = await dbcontext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			return user.Admin;
+		}
+
+		public async Task<IEnumerable<UserProfileResponse>> GetAllUsers()
+		{
+			return await dbcontext.Users.Select(u => u.ToUserProfileResponse()).ToListAsync();
+		}
+
+		public async Task BanUser(int userId)
+		{
+			var user = await dbcontext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			user.Ban = true;
+
+			dbcontext.Entry(user).State = EntityState.Modified;
+			await dbcontext.SaveChangesAsync();
+		}
+
+		public async Task SetMembership(int userId)
+		{
+			var user = await dbcontext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			user.Membership = true;
+
+			dbcontext.Entry(user).State = EntityState.Modified;
+			await dbcontext.SaveChangesAsync();
+		}
+
+		public async Task RemoveMembership(int userId)
+		{
+			var user = await dbcontext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			user.Membership = false;
+
+			dbcontext.Entry(user).State = EntityState.Modified;
+			await dbcontext.SaveChangesAsync();
+		}
+
+		public async Task UpdatePhotoPath(string path, int userId)
+		{
+			var user = await dbcontext.Users.FindAsync(userId);
+			if (user == null)
+				throw new ArgumentException("User wasn't found");
+
+			user.Photo = path;
+
+			dbcontext.Entry(user).State = EntityState.Modified;
+			await dbcontext.SaveChangesAsync();
 		}
 
         #region Private Methods

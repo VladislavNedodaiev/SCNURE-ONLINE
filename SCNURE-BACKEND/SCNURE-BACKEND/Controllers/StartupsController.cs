@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SCNURE_BACKEND.Data.Dtos.Canvases;
@@ -13,6 +14,7 @@ using SCNURE_BACKEND.Data.Dtos.TeamMembers;
 using SCNURE_BACKEND.Data.Entities;
 using SCNURE_BACKEND.Data.Entities.ClientEntities.Startup;
 using SCNURE_BACKEND.Helpers;
+using SCNURE_BACKEND.Services.Images;
 using SCNURE_BACKEND.Services.Users;
 using SCNURE_BACKEND.UseCases;
 
@@ -27,12 +29,15 @@ namespace SCNURE_BACKEND.Controllers
         private readonly IStartupService startupService;
         private readonly IUserService userService;
         private readonly IOptions<JwtSettings> jwtSettings;
+		private readonly IImagesService imagesService;
 
-        public StartupsController(IStartupService _startupService, IOptions<JwtSettings> _jwtSettings, IUserService _userService)
+		public StartupsController(IStartupService _startupService, IOptions<JwtSettings> _jwtSettings, 
+			IUserService _userService, IImagesService imagesService)
         {
             startupService = _startupService;
             jwtSettings = _jwtSettings;
             userService = _userService;
+			this.imagesService = imagesService;
         }
 
         [AllowAnonymous]
@@ -381,5 +386,24 @@ namespace SCNURE_BACKEND.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+		[Authorize]
+		[HttpPost("upload-startup-photo")]
+		public async Task<IActionResult> UploadStartupPicture(IFormFile file,
+			[ModelBinder(BinderType = typeof(JsonModelBinder))]UpdateStartupPhotoRequest dto)
+		{
+			try
+			{
+				int contextUserId = int.Parse(HttpContext.User.Identity.Name);
+
+				var path = await imagesService.UploadStartupPicture(file, dto.StartupId);
+
+				return Ok(path);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
 	}
 }
