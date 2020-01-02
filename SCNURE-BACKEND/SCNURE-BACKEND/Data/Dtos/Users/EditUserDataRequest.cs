@@ -11,21 +11,14 @@ namespace SCNURE_BACKEND.Data.Dtos.Users
 	{
 		[Required]
 		public string Login { get; set; }
-		[Required]
 		public string FirstName { get; set; }
-		[Required]
 		public string SecondName { get; set; }
 		[Required]
 		public UserGender? Gender { get; set; }
-		[Required]
-		public string Photo { get; set; }
-		[Required]
 		public string Description { get; set; }
-		[Required]
 		public string Phone { get; set; }
 		[Required]
 		public bool ShowPhone { get; set; }
-		[Required]
 		public DateTime? Birthday { get; set; }
 		[Required]
 		public bool ShowBirthday { get; set; }

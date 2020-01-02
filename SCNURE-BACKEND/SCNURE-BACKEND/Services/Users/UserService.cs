@@ -127,7 +127,10 @@ namespace SCNURE_BACKEND.Services.Users
 				Login = userDto.Login,
 				PasswordHash = passwordHash,
 				PasswordSalt = passwordSalt,
-				Email = userDto.Email
+				Email = userDto.Email,
+				ShowBirthday = true,
+				ShowEmail = true,
+				ShowPhone = true
 			};
 
 			await dbcontext.Users.AddAsync(user);

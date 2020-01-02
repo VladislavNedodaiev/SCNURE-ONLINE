@@ -77,15 +77,15 @@ namespace SCNURE_BACKEND.Controllers
                 var user = await userService.RegisterAsync(userDto);
 				if (user != null)
 				{
-					var callbackUrl = Url.Action(
-						"confirmEmail",
-						"accounts",
-						new { token = user.Verification},
-						protocol: HttpContext.Request.Scheme);
-					await emailService.SendEmailAsync(user.Email, "Confirm your account",
-						$"<h3>Thanks for signing up to YEP! Startup Club</h3>" +
-							$"<p>Please confirm your email address to complete your SCNURE registration.</p>" +
-							$"<a href='{callbackUrl}'>Confirm your email</a>");
+					//var callbackUrl = Url.Action(
+					//	"confirmEmail",
+					//	"accounts",
+					//	new { token = user.Verification},
+					//	protocol: HttpContext.Request.Scheme);
+					//await emailService.SendEmailAsync(user.Email, "Confirm your account",
+					//	$"<h3>Thanks for signing up to YEP! Startup Club</h3>" +
+					//		$"<p>Please confirm your email address to complete your SCNURE registration.</p>" +
+					//		$"<a href='{callbackUrl}'>Confirm your email</a>");
 					return Ok();
 				}
 				else
